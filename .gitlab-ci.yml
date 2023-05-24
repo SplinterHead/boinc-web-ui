@@ -1,0 +1,26 @@
+image: node:20-alpine
+
+stages:
+  - prep
+  - test
+
+install:
+  stage: prep
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - node_modules/
+  artifacts:
+    paths:
+      - node_modules/
+  script: 
+    - npm install --progress=false
+
+
+unitTest:
+  stage: test
+  script:
+    - npm run test:unit
+      
