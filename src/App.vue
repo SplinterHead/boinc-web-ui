@@ -1,10 +1,18 @@
 <template>
-  <div id="app" />
+  <div id="app">
+    <NavigationBar />
+    <b-button id="menu-btn" v-b-toggle.navigation-side-bar>Menu</b-button>
+  </div>
 </template>
 
 <script>
+import NavigationBar from "./components/NavigationBar.vue";
+
 export default {
   name: "App",
+  components: {
+    NavigationBar,
+  },
 };
 </script>
 
