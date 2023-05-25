@@ -1,4 +1,4 @@
-image: node:20-alpine
+image: node:19-alpine
 
 stages:
   - prep
@@ -23,10 +23,15 @@ unitTest:
   stage: test
   script: npm run test:unit
 
-build:
+pages:
   stage: build
   script: npm run build
   artifacts:
     paths:
-      - public/
+      # The folder that contains the files to be exposed at the Page URL
+      - public
+  rules:
+    # This ensures that only pushes to the default branch will trigger
+    # a pages deploy
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
       
