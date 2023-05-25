@@ -3,6 +3,7 @@ image: node:20-alpine
 stages:
   - prep
   - test
+  - build
 
 install:
   stage: prep
@@ -15,12 +16,17 @@ install:
   artifacts:
     paths:
       - node_modules/
-  script: 
-    - npm install --progress=false
+  script: npm install --progress=false
 
 
 unitTest:
   stage: test
-  script:
-    - npm run test:unit
+  script: npm run test:unit
+
+build:
+  stage: build
+  script: npm run build
+  artifacts:
+    paths:
+      - public/
       
