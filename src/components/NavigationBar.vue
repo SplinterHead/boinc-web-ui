@@ -6,6 +6,18 @@
     text-variant="light"
     shadow
   >
-    <b-button>Add New Client...</b-button>
+    <b-button v-b-modal.new-client-modal>Add New Client...</b-button>
+    <NewClientModal />
   </b-sidebar>
 </template>
+
+<script>
+import NewClientModal from "@/components/navigation/NewClientModal";
+
+export default {
+  name: "NavigationBar",
+  components: {
+    NewClientModal,
+  },
+};
+</script>
