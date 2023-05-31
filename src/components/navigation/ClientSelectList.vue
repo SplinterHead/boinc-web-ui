@@ -1,10 +1,20 @@
 <template>
   <div>
-    <b-nav-item-dropdown v-if="clients.length > 0" id="client-dropdown">
-      <b-dropdown-item v-for="client in clients" :key="client.id">
+    <b-dropdown
+      split
+      v-if="clients.length > 0"
+      id="client-dropdown"
+      :text="!activeClient.name ? 'Select Client...' : activeClient.name"
+      toggleText=""
+    >
+      <b-dropdown-item
+        v-for="client in clients"
+        :key="client.id"
+        @click="setActiveClient(client)"
+      >
         {{ client.name }}
       </b-dropdown-item>
-    </b-nav-item-dropdown>
+    </b-dropdown>
     <b-button id="new-client-btn" v-else v-b-modal.new-client-modal>
       Add New Client...
     </b-button>
@@ -27,6 +37,9 @@ export default {
   methods: {
     addClient(e) {
       this.$emit("add-client", e);
+    },
+    setActiveClient(client) {
+      this.$emit("select-client", client);
     },
   },
 };

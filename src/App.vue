@@ -5,6 +5,7 @@
       :active-client="activeClient"
       :clients="clients"
       @add-client="addClient"
+      @select-client="selectActiveClient"
     />
   </div>
 </template>
@@ -26,6 +27,10 @@ export default {
   methods: {
     addClient(e) {
       this.clients.push(JSON.parse(JSON.stringify(e)));
+    },
+    selectActiveClient(client) {
+      this.activeClient = client;
+      this.setVisiblePane("client");
     },
   },
 };

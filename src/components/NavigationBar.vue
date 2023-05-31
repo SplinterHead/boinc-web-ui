@@ -1,5 +1,6 @@
 <template>
   <b-sidebar
+    class="text-center"
     id="navigation-side-bar"
     title="BOINC Client"
     bg-variant="dark"
@@ -10,6 +11,7 @@
       :active-client="activeClient"
       :clients="clients"
       @add-client="addClient"
+      @select-client="setActiveClient"
     />
   </b-sidebar>
 </template>
@@ -29,6 +31,9 @@ export default {
   methods: {
     addClient(e) {
       this.$emit("add-client", e);
+    },
+    setActiveClient(client) {
+      this.$emit("select-client", client);
     },
   },
 };
