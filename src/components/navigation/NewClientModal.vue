@@ -1,5 +1,11 @@
 <template>
-  <b-modal id="new-client-modal" title="New BOINC Client">
+  <b-modal
+    id="new-client-modal"
+    title="New BOINC Client"
+    @ok="emitDataAndReset"
+    @cancel="resetForm"
+    @close="resetForm"
+  >
     <b-form>
       <b-form-group
         id="name-group"
@@ -62,6 +68,18 @@ export default {
         password: "",
       },
     };
+  },
+  methods: {
+    emitDataAndReset() {
+      this.$emit("add-client", this.client);
+      this.resetForm();
+    },
+    resetForm() {
+      this.client.name = "";
+      this.client.hostname = "";
+      this.client.port = 31416;
+      this.client.password = "";
+    },
   },
 };
 </script>
