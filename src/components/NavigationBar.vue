@@ -6,18 +6,21 @@
     text-variant="light"
     shadow
   >
-    <b-button v-b-modal.new-client-modal>Add New Client...</b-button>
-    <NewClientModal />
+    <ClientSelectList :active-client="activeClient" :clients="clients" />
   </b-sidebar>
 </template>
 
 <script>
-import NewClientModal from "@/components/navigation/NewClientModal";
+import ClientSelectList from "./navigation/ClientSelectList.vue";
 
 export default {
   name: "NavigationBar",
   components: {
-    NewClientModal,
+    ClientSelectList,
+  },
+  props: {
+    activeClient: {},
+    clients: [],
   },
 };
 </script>

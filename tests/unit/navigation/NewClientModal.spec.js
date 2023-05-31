@@ -1,7 +1,7 @@
 import { createLocalVue, shallowMount } from "@vue/test-utils";
 import { BFormInput, BootstrapVue } from "bootstrap-vue";
 
-import NewClientModal from "@/components/navigation/NewClientModal";
+import NewClientModal from "@/components/navigation/NewClientModal.vue";
 
 // create an extended `Vue` constructor
 const localVue = createLocalVue();

@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <NavigationBar />
     <b-button id="menu-btn" v-b-toggle.navigation-side-bar>Menu</b-button>
+    <NavigationBar :active-client="activeClient" :clients="clients" />
   </div>
 </template>
 
@@ -12,6 +12,12 @@ export default {
   name: "App",
   components: {
     NavigationBar,
+  },
+  data() {
+    return {
+      activeClient: {},
+      clients: [],
+    };
   },
 };
 </script>

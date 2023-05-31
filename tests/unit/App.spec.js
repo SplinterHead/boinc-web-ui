@@ -1,7 +1,7 @@
 import { createLocalVue, shallowMount } from "@vue/test-utils";
 import { BootstrapVue } from "bootstrap-vue";
 
-import App from "@/App";
+import App from "@/App.vue";
 
 // create an extended `Vue` constructor
 const localVue = createLocalVue();
