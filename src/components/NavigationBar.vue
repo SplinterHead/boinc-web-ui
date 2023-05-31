@@ -6,7 +6,11 @@
     text-variant="light"
     shadow
   >
-    <ClientSelectList :active-client="activeClient" :clients="clients" />
+    <ClientSelectList
+      :active-client="activeClient"
+      :clients="clients"
+      @add-client="addClient"
+    />
   </b-sidebar>
 </template>
 
@@ -21,6 +25,11 @@ export default {
   props: {
     activeClient: {},
     clients: [],
+  },
+  methods: {
+    addClient(e) {
+      this.$emit("add-client", e);
+    },
   },
 };
 </script>

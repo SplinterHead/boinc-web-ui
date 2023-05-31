@@ -8,7 +8,7 @@
     <b-button id="new-client-btn" v-else v-b-modal.new-client-modal>
       Add New Client...
     </b-button>
-    <NewClientModal />
+    <NewClientModal @add-client="addClient" />
   </div>
 </template>
 
@@ -23,6 +23,11 @@ export default {
   props: {
     activeClient: {},
     clients: [],
+  },
+  methods: {
+    addClient(e) {
+      this.$emit("add-client", e);
+    },
   },
 };
 </script>

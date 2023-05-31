@@ -1,7 +1,11 @@
 <template>
   <div id="app">
     <b-button id="menu-btn" v-b-toggle.navigation-side-bar>Menu</b-button>
-    <NavigationBar :active-client="activeClient" :clients="clients" />
+    <NavigationBar
+      :active-client="activeClient"
+      :clients="clients"
+      @add-client="addClient"
+    />
   </div>
 </template>
 
@@ -18,6 +22,11 @@ export default {
       activeClient: {},
       clients: [],
     };
+  },
+  methods: {
+    addClient(e) {
+      this.clients.push(JSON.parse(JSON.stringify(e)));
+    },
   },
 };
 </script>
