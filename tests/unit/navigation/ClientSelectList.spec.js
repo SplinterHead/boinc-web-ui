@@ -55,6 +55,6 @@ describe("ClientSelectList.vue", () => {
         ],
       },
     });
-    expect(wrapper.find("#client-dropdown").attributes("text")).toBe("thisisareallylongnamethat...");
+    expect(wrapper.find("#client-dropdown").attributes("text")).toBe("thisisareallylongname...");
   });
 });

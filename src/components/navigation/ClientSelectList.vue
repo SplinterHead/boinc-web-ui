@@ -8,7 +8,7 @@
       :text="
         !activeClient.name
           ? 'Select Client...'
-          : activeClient.name | truncate(25, '...')
+          : activeClient.name | truncate(21, '...')
       "
       toggleText=""
     >
@@ -17,7 +17,7 @@
         :key="client.id"
         @click="setActiveClient(client)"
       >
-        {{ client.name | truncate(25, "...") }}
+        {{ client.name | truncate(21, "...") }}
       </b-dropdown-item>
       <b-dropdown-divider />
       <b-dropdown-item v-b-modal.new-client-modal>
