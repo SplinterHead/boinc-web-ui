@@ -2,9 +2,14 @@
   <div>
     <b-dropdown
       split
+      class="w-75"
       v-if="clients.length > 0"
       id="client-dropdown"
-      :text="!activeClient.name ? 'Select Client...' : activeClient.name"
+      :text="
+        !activeClient.name
+          ? 'Select Client...'
+          : activeClient.name | truncate(25, '...')
+      "
       toggleText=""
     >
       <b-dropdown-item
@@ -12,10 +17,19 @@
         :key="client.id"
         @click="setActiveClient(client)"
       >
-        {{ client.name }}
+        {{ client.name | truncate(25, "...") }}
+      </b-dropdown-item>
+      <b-dropdown-divider />
+      <b-dropdown-item v-b-modal.new-client-modal>
+        Add New Client...
       </b-dropdown-item>
     </b-dropdown>
-    <b-button id="new-client-btn" v-else v-b-modal.new-client-modal>
+    <b-button
+      v-else
+      id="new-client-btn"
+      class="w-75"
+      v-b-modal.new-client-modal
+    >
       Add New Client...
     </b-button>
     <NewClientModal @add-client="addClient" />
@@ -42,5 +56,20 @@ export default {
       this.$emit("select-client", client);
     },
   },
+  filters: {
+    truncate: function (text, length, suffix) {
+      if (text.length > length) {
+        return text.substring(0, length) + suffix;
+      } else {
+        return text;
+      }
+    },
+  },
 };
 </script>
+
+<style>
+.dropdown-toggle {
+  flex-grow: 0 !important;
+}
+</style>
