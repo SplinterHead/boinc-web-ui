@@ -9,53 +9,56 @@ const localVue = createLocalVue();
 // install plugins as normal
 localVue.use(BootstrapVue);
 
+let wrapper;
+
+const clientDropDown = () => wrapper.find("#client-dropdown");
+const newClientBtn = () => wrapper.find("#new-client-btn");
+
+function createWrapper(propsData) {
+  wrapper = shallowMount(ClientSelectList, {
+    localVue,
+    propsData: propsData,
+  });
+}
+
+afterEach(() => {
+  wrapper.destroy();
+});
+
 describe("ClientSelectList.vue", () => {
   it("renders as a button when no clients are configured", () => {
-    const wrapper = shallowMount(ClientSelectList, {
-      localVue,
-      propsData: {
-        activeClient: {},
-        clients: [],
-      },
+    createWrapper({
+      activeClient: {},
+      clients: [],
     });
-    expect(wrapper.find("#client-dropdown").exists()).toBe(false);
-    expect(wrapper.find("#new-client-btn").exists()).toBe(true);
+    expect(clientDropDown().exists()).toBe(false);
+    expect(newClientBtn().exists()).toBe(true);
   });
 
   it("renders as a dropdown when clients are configured", () => {
-    const wrapper = shallowMount(ClientSelectList, {
-      localVue,
-      propsData: {
-        activeClient: {},
-        clients: [
-          { name: "test client" },
-          { name: "test client" },
-          { name: "test client" },
-        ],
-      },
+    createWrapper({
+      activeClient: {},
+      clients: [
+        { name: "test client" },
+        { name: "test client" },
+        { name: "test client" },
+      ],
     });
-    expect(wrapper.find("#client-dropdown").exists()).toBe(true);
-    expect(wrapper.find("#new-client-btn").exists()).toBe(false);
-    expect(wrapper.find("#client-dropdown").attributes("text")).toBe(
-      "Select Client..."
-    );
+    expect(newClientBtn().exists()).toBe(false);
+    expect(clientDropDown().exists()).toBe(true);
+    expect(clientDropDown().attributes("text")).toBe("Select Client...");
 
-    const dropdownItems = wrapper
-      .find("#client-dropdown")
-      .findAllComponents(BDropdownItem);
+    const dropdownItems = clientDropDown().findAllComponents(BDropdownItem);
     expect(dropdownItems.length).toBe(4); // 4 accounts for the "Add New Client..." option
     expect(dropdownItems.at(-1).text()).toBe("Add New Client...");
   });
 
   it("truncates a long name", () => {
-    const wrapper = shallowMount(ClientSelectList, {
-      localVue,
-      propsData: {
-        activeClient: { name: "thisisareallylongnamethatistoolongtodisplay" },
-        clients: [{ name: "thisisareallylongnamethatistoolongtodisplay" }],
-      },
+    createWrapper({
+      activeClient: { name: "thisisareallylongnamethatistoolongtodisplay" },
+      clients: [{ name: "thisisareallylongnamethatistoolongtodisplay" }],
     });
-    expect(wrapper.find("#client-dropdown").attributes("text")).toBe(
+    expect(clientDropDown().attributes("text")).toBe(
       "thisisareallylongname..."
     );
   });
