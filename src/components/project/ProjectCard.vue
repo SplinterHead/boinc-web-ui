@@ -1,13 +1,14 @@
 <template>
   <b-card :title="project.name" :sub-title="project.description">
-    <div id="project-platforms" v-show="translatedPlatforms.size > 0">
+    <div id="project-platforms" v-show="translatedPlatforms.length > 0">
       Platforms:
       <span
         v-for="platform in translatedPlatforms"
         :key="platform"
         :id="'platform-' + platform"
+        class="platform-icon"
       >
-        {{ platform }}
+        <font-awesome-icon :icon="'fa-brands fa-' + platform" />
       </span>
     </div>
   </b-card>
@@ -34,8 +35,15 @@ export default {
           platformArr.push("apple");
         }
       });
-      return new Set(platformArr);
+      const translatedSet = new Set(platformArr);
+      return [...translatedSet].sort();
     },
   },
 };
 </script>
+
+<style scoped>
+.platform-icon {
+  padding-left: 5px;
+}
+</style>

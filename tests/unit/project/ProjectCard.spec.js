@@ -1,6 +1,16 @@
 import { createLocalVue, mount } from "@vue/test-utils";
 import { BootstrapVue } from "bootstrap-vue";
 
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import {
+  faApple,
+  faLinux,
+  faWindows,
+} from "@fortawesome/free-brands-svg-icons";
+
+library.add([faApple, faLinux, faWindows]);
+
 import ProjectCard from "@/components/project/ProjectCard.vue";
 
 // create an extended `Vue` constructor
@@ -8,6 +18,7 @@ const localVue = createLocalVue();
 
 // install plugins as normal
 localVue.use(BootstrapVue);
+localVue.component("font-awesome-icon", FontAwesomeIcon);
 
 let wrapper;
 
