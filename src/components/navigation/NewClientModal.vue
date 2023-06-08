@@ -2,6 +2,7 @@
   <b-modal
     id="new-client-modal"
     title="New BOINC Client"
+    :busy="loading"
     @ok="emitDataAndReset"
     @cancel="resetForm"
     @close="resetForm"
@@ -57,6 +58,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "NewClientModal",
   data() {
@@ -67,12 +70,27 @@ export default {
         port: 31416,
         password: "",
       },
+      loading: false,
     };
   },
   methods: {
-    emitDataAndReset() {
-      this.$emit("add-client", this.client);
-      this.resetForm();
+    async emitDataAndReset(e) {
+      e.preventDefault();
+      this.loading = true;
+      await axios
+        .post(`${process.env.VUE_APP_API_URL}/clients/add`, this.client)
+        .then((response) => {
+          this.client["clientId"] = response.data.client_id;
+          this.$emit("add-client", this.client);
+          this.$bvModal.hide("new-client-modal");
+          this.resetForm();
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
     resetForm() {
       this.client.name = "";
