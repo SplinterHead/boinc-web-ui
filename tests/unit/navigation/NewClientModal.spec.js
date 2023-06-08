@@ -10,9 +10,8 @@ const localVue = createLocalVue();
 localVue.use(BootstrapVue);
 
 describe("NewClientModal.vue", () => {
-  const wrapper = shallowMount(NewClientModal, { localVue });
-
   describe("it renders with the expected elements", () => {
+    const wrapper = shallowMount(NewClientModal, { localVue });
     it("has a title of 'New Client'", () => {
       expect(wrapper.attributes("title")).toBe("New BOINC Client");
     });

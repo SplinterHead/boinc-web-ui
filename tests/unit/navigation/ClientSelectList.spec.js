@@ -1,5 +1,5 @@
 import { createLocalVue, shallowMount } from "@vue/test-utils";
-import { BButton, BDropdownItem, BootstrapVue } from "bootstrap-vue";
+import { BDropdownItem, BootstrapVue } from "bootstrap-vue";
 
 import ClientSelectList from "@/components/navigation/ClientSelectList.vue";
 
@@ -36,13 +36,15 @@ describe("ClientSelectList.vue", () => {
     });
     expect(wrapper.find("#client-dropdown").exists()).toBe(true);
     expect(wrapper.find("#new-client-btn").exists()).toBe(false);
-    expect(wrapper.find("#client-dropdown").attributes("text")).toBe("Select Client...");
+    expect(wrapper.find("#client-dropdown").attributes("text")).toBe(
+      "Select Client..."
+    );
 
     const dropdownItems = wrapper
       .find("#client-dropdown")
       .findAllComponents(BDropdownItem);
     expect(dropdownItems.length).toBe(4); // 4 accounts for the "Add New Client..." option
-    expect(dropdownItems.at(-1).text()).toBe("Add New Client...")
+    expect(dropdownItems.at(-1).text()).toBe("Add New Client...");
   });
 
   it("truncates a long name", () => {
@@ -50,11 +52,11 @@ describe("ClientSelectList.vue", () => {
       localVue,
       propsData: {
         activeClient: { name: "thisisareallylongnamethatistoolongtodisplay" },
-        clients: [
-          { name: "thisisareallylongnamethatistoolongtodisplay" },
-        ],
+        clients: [{ name: "thisisareallylongnamethatistoolongtodisplay" }],
       },
     });
-    expect(wrapper.find("#client-dropdown").attributes("text")).toBe("thisisareallylongname...");
+    expect(wrapper.find("#client-dropdown").attributes("text")).toBe(
+      "thisisareallylongname..."
+    );
   });
 });
