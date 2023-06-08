@@ -30,6 +30,12 @@ describe("NavigationBar.vue", () => {
       expect(newClientButton.text()).toBe("Add New Client...");
     });
 
+    it("has a menu entry for seeing the project list", async () => {
+      const projectListButton = sidebar.find("#project-list-btn");
+      expect(projectListButton.text()).toBe("Project List");
+    });
+  });
+
   describe("collects data on creation", () => {
     const testProjects = {
       status: 200,

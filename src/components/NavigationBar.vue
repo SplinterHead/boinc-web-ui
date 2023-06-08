@@ -13,6 +13,13 @@
       @add-client="addClient"
       @select-client="setActiveClient"
     />
+    <b-button
+      id="project-list-btn"
+      class="w-75"
+      @click="setActivePane('projectlist')"
+    >
+      Project List
+    </b-button>
   </b-sidebar>
 </template>
 
@@ -35,6 +42,9 @@ export default {
     },
     setActiveClient(client) {
       this.$emit("select-client", client);
+    },
+    setActivePane(pane) {
+      this.$emit("select-pane", pane);
     },
   },
   created() {

@@ -2,25 +2,33 @@
   <div id="app">
     <b-button id="menu-btn" v-b-toggle.navigation-side-bar>Menu</b-button>
     <NavigationBar
-      :active-client="activeClient"
+      :activeClient="activeClient"
       :clients="clients"
       @add-client="addClient"
       @select-client="selectActiveClient"
+      @select-pane="selectActivePane"
+    />
+    <ProjectList
+      v-if="activeClient.name && activePane == 'projectlist'"
+      :activeClient="activeClient"
     />
   </div>
 </template>
 
 <script>
 import NavigationBar from "./components/NavigationBar.vue";
+import ProjectList from "./components/ProjectList.vue";
 
 export default {
   name: "App",
   components: {
     NavigationBar,
+    ProjectList,
   },
   data() {
     return {
       activeClient: {},
+      activePane: "",
       clients: [],
     };
   },
@@ -30,7 +38,9 @@ export default {
     },
     selectActiveClient(client) {
       this.activeClient = client;
-      this.setVisiblePane("client");
+    },
+    selectActivePane(pane) {
+      this.activePane = pane;
     },
   },
 };
