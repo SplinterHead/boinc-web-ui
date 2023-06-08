@@ -1,5 +1,6 @@
-import { createLocalVue, mount } from "@vue/test-utils";
-import { BButton, BSidebar, BootstrapVue } from "bootstrap-vue";
+import { createLocalVue, mount, shallowMount } from "@vue/test-utils";
+import { BSidebar, BootstrapVue } from "bootstrap-vue";
+import axios from "axios";
 
 import NavigationBar from "@/components/NavigationBar.vue";
 
@@ -25,8 +26,22 @@ describe("NavigationBar.vue", () => {
     });
 
     it("has a button for adding a new client", () => {
-      const newClientButton = sidebar.getComponent(BButton);
+      const newClientButton = sidebar.find("#new-client-btn");
       expect(newClientButton.text()).toBe("Add New Client...");
+    });
+
+  describe("collects data on creation", () => {
+    const testProjects = {
+      status: 200,
+      data: [],
+    };
+    jest.spyOn(axios, "get").mockResolvedValue(testProjects);
+    it("requests a list of currently configured clients", () => {
+      shallowMount(NavigationBar, { localVue });
+      expect(axios.get).toBeCalledTimes(1);
+      expect(axios.get).toHaveBeenCalledWith(
+        expect.stringMatching(/.*\/getall/)
+      );
     });
   });
 });

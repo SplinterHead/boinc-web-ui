@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import ClientSelectList from "./navigation/ClientSelectList.vue";
 
 export default {
@@ -35,6 +36,16 @@ export default {
     setActiveClient(client) {
       this.$emit("select-client", client);
     },
+  },
+  created() {
+    axios
+      .get(`${process.env.VUE_APP_API_URL}/clients/getall`)
+      .then((response) => {
+        response.data.forEach((client) => {
+          console.log(client);
+          this.$emit("add-client", client);
+        });
+      });
   },
 };
 </script>
