@@ -170,6 +170,26 @@ describe("ProjectList.vue", () => {
       ).toBe("Biomedicine");
     });
 
+    it("maintains the full list of subcategories when one is selected", async () => {
+      const wrapper = await shallowMount(ProjectList, {
+        localVue,
+        propsData: {
+          activeClient: { name: "test client", id: "123" },
+        },
+      });
+      await wrapper.vm.$nextTick;
+      const categorySelect = wrapper.find("#category-select");
+      const dropdownItems = categorySelect.findAllComponents(BDropdownItem);
+      dropdownItems.at(0).vm.$emit("click");
+      await wrapper.vm.$nextTick;
+
+      const subCategorySelect = wrapper.get("#subcategory-select");
+      const subDropdownItems = subCategorySelect.findAllComponents(BDropdownItem);
+      subDropdownItems.at(0).vm.$emit("click");
+      await wrapper.vm.$nextTick;
+      expect(subCategorySelect.findAllComponents(BDropdownItem).length).toBe(3);
+    });
+
     it("only displays the projects that match the selected category", async () => {
       const wrapper = await mount(ProjectList, {
         localVue,
@@ -224,7 +244,6 @@ describe("ProjectList.vue", () => {
       const subDropdownItems =
         subCategorySelect.findAllComponents(BDropdownItem);
 
-      // Category with 2 entries
       subDropdownItems.at(0).vm.$emit("click");
       await wrapper.vm.$nextTick;
       const projects = wrapper.findAllComponents(ProjectCard);

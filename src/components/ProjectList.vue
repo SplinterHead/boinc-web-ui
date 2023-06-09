@@ -99,7 +99,11 @@ export default {
       return new Set(this.allProjects.map((proj) => proj.general_area));
     },
     subCategories() {
-      return new Set(this.filteredProjects.map((proj) => proj.specific_area));
+      return new Set(
+        this.allProjects
+          .filter((proj) => proj.general_area == this.filters.category)
+          .map((proj) => proj.specific_area)
+      );
     },
     filteredProjects() {
       if (this.filters.category == "") {
