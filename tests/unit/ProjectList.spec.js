@@ -1,6 +1,18 @@
-import { createLocalVue, shallowMount } from "@vue/test-utils";
-import { BootstrapVue } from "bootstrap-vue";
+import { createLocalVue, mount, shallowMount } from "@vue/test-utils";
+import { BDropdownItem, BootstrapVue } from "bootstrap-vue";
+
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import {
+  faApple,
+  faLinux,
+  faWindows,
+} from "@fortawesome/free-brands-svg-icons";
+
+library.add([faApple, faLinux, faWindows]);
+
 import ProjectList from "@/components/ProjectList.vue";
+import ProjectCard from "@/components/project/ProjectCard.vue";
 import axios from "axios";
 
 // create an extended `Vue` constructor
@@ -8,6 +20,66 @@ const localVue = createLocalVue();
 
 // install plugins as normal
 localVue.use(BootstrapVue);
+localVue.component("font-awesome-icon", FontAwesomeIcon);
+
+const sampleProjects = [
+  {
+    description: "Study drugs to fight SARS-CoV-2",
+    general_area: "Biology and Medicine",
+    home: "The COVID.SI project and the Karelian Research Center of the Russian Academy of Sciences",
+    id: 51,
+    image: "https://boinc.berkeley.edu/images/sidock.png",
+    keywords: "9 13 64 20 44",
+    name: "SIDock@home",
+    platforms: [
+      {
+        name: "windows_x86_64",
+      },
+    ],
+    specific_area: "Biomedicine",
+    summary: "Study drugs to fight SARS-CoV-2",
+    url: "https://www.sidock.si/sidock/",
+    web_url: "https://www.sidock.si/sidock/",
+  },
+  {
+    description:
+      "RNA World seeks to identify, analyze, structurally predict and design RNA molecules on the basis of established bioinformatics software.",
+    general_area: "Biology and Medicine",
+    home: "Rechenkraft.net e.V.",
+    id: 5,
+    image: "https://boinc.berkeley.edu/images/rna4.png",
+    keywords: "9 12 20 21",
+    name: "RNA World",
+    platforms: [
+      {
+        name: "windows_x86_64",
+      },
+    ],
+    specific_area: "Molecular biology",
+    summary: "Study and design RNA molecules",
+    url: "https://www.rnaworld.de/rnaworld/",
+    web_url: "https://www.rnaworld.de/rnaworld/",
+  },
+  {
+    description:
+      "The goal of Cosmology@Home is to search for the model that best describes our Universe and to find the range of models that agree with the available astronomical particle physics data.",
+    general_area: "Physical Science",
+    home: "University of Illinois at Urbana-Champaign",
+    id: 12,
+    image: "https://boinc.berkeley.edu/images/cosmo.jpg",
+    keywords: "1 5 23 24 56",
+    name: "Cosmology@Home",
+    platforms: [
+      {
+        name: "windows_x86_64",
+      },
+    ],
+    specific_area: "Astronomy",
+    summary: "Study the evolution of the Universe",
+    url: "http://www.cosmologyathome.org/",
+    web_url: "http://www.cosmologyathome.org/",
+  },
+];
 
 describe("ProjectList.vue", () => {
   describe("No projects returned from the API", () => {
@@ -33,6 +105,70 @@ describe("ProjectList.vue", () => {
       });
       expect(axios.get).toHaveBeenCalledWith(expect.stringMatching(/.*=123/));
       expect(wrapper.text()).toBe("No Projects found");
+    });
+  });
+
+  describe("projects can be filtered", () => {
+    const sampleProjectsResponse = {
+      status: 200,
+      data: { projects: sampleProjects },
+    };
+    jest.spyOn(axios, "get").mockResolvedValue(sampleProjectsResponse);
+
+    it("builds a list of categories from the projects", async () => {
+      const wrapper = await shallowMount(ProjectList, {
+        localVue,
+        propsData: {
+          activeClient: { name: "test client", id: "123" },
+        },
+      });
+
+      await wrapper.vm.$nextTick;
+      const filterBar = wrapper.get("#filter-bar");
+      expect(filterBar.exists()).toBe(true);
+
+      await wrapper.vm.$nextTick;
+      const categorySelect = filterBar.get("#category-select");
+      expect(categorySelect.exists()).toBe(true);
+      expect(categorySelect.attributes("text")).toBe("Select...");
+      expect(categorySelect.findAllComponents(BDropdownItem).length).toBe(3); // Allow for "reset" option
+      expect(categorySelect.findAllComponents(BDropdownItem).at(0).text()).toBe(
+        "Biology and Medicine"
+      );
+    });
+
+    it("only displays the projects that match the category", async () => {
+      const wrapper = await mount(ProjectList, {
+        localVue,
+        propsData: {
+          activeClient: { name: "test client", id: "123" },
+        },
+      });
+
+      await wrapper.vm.$nextTick;
+
+      const categorySelect = wrapper.find("#category-select");
+      const dropdownItems = categorySelect.findAllComponents(BDropdownItem);
+
+      let projects;
+
+      // Category with 2 entries
+      dropdownItems.at(0).vm.$emit("click");
+      await wrapper.vm.$nextTick;
+      projects = wrapper.findAllComponents(ProjectCard);
+      expect(projects.length).toBe(2);
+
+      // Category with 1 entry
+      dropdownItems.at(1).vm.$emit("click");
+      await wrapper.vm.$nextTick;
+      projects = wrapper.findAllComponents(ProjectCard);
+      expect(projects.length).toBe(1);
+
+      // Reset to remove any category filter
+      dropdownItems.at(2).vm.$emit("click");
+      await wrapper.vm.$nextTick;
+      projects = wrapper.findAllComponents(ProjectCard);
+      expect(projects.length).toBe(3);
     });
   });
 });
