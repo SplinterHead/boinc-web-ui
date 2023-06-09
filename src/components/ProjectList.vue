@@ -7,6 +7,7 @@
           v-for="project in allProjects"
           :key="project.name"
           :project="project"
+          class="project-card"
         />
       </div>
     </div>
@@ -45,3 +46,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.project-card {
+  margin-bottom: 3px;
+}
+</style>

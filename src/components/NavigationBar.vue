@@ -6,6 +6,11 @@
     bg-variant="dark"
     text-variant="light"
     shadow
+    :visible="forceDisplay"
+    :no-close-on-backdrop="forceDisplay"
+    :no-close-on-esc="forceDisplay"
+    :no-close-on-route-change="forceDisplay"
+    :no-header-close="forceDisplay"
   >
     <ClientSelectList
       :active-client="activeClient"
@@ -36,6 +41,11 @@ export default {
     activeClient: {},
     clients: [],
   },
+  data() {
+    return {
+      forceDisplay: true,
+    };
+  },
   methods: {
     addClient(e) {
       this.$emit("add-client", e);
@@ -52,7 +62,6 @@ export default {
       .get(`${process.env.VUE_APP_API_URL}/clients/getall`)
       .then((response) => {
         response.data.forEach((client) => {
-          console.log(client);
           this.$emit("add-client", client);
         });
       });

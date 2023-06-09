@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <b-button id="menu-btn" v-b-toggle.navigation-side-bar>Menu</b-button>
     <NavigationBar
       :activeClient="activeClient"
       :clients="clients"
@@ -8,10 +7,12 @@
       @select-client="selectActiveClient"
       @select-pane="selectActivePane"
     />
-    <ProjectList
-      v-if="activeClient.name && activePane == 'projectlist'"
-      :activeClient="activeClient"
-    />
+    <div id="active-pane">
+      <ProjectList
+        v-if="activeClient.name && activePane == 'projectlist'"
+        :activeClient="activeClient"
+      />
+    </div>
   </div>
 </template>
 
@@ -53,5 +54,10 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
   margin-top: 10px;
+}
+
+#active-pane {
+  margin-left: 350px;
+  margin-right: 30px;
 }
 </style>
