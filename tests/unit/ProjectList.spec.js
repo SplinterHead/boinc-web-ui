@@ -137,6 +137,26 @@ describe("ProjectList.vue", () => {
       );
     });
 
+    it("builds a list of sub-categories from the projects once category is selected", async () => {
+      const wrapper = await shallowMount(ProjectList, {
+        localVue,
+        propsData: {
+          activeClient: { name: "test client", id: "123" },
+        },
+      });
+
+      await wrapper.vm.$nextTick;
+      expect(wrapper.get("#subcategory-select").exists()).toBe(false);
+      // const subCategorySelect = wrapper.get("#subcategory-select");
+      // expect(subCategorySelect.exists()).toBe(false);
+      expect(subCategorySelect.exists()).toBe(filter);
+      expect(categorySelect.attributes("text")).toBe("Select...");
+      expect(categorySelect.findAllComponents(BDropdownItem).length).toBe(3); // Allow for "reset" option
+      expect(categorySelect.findAllComponents(BDropdownItem).at(0).text()).toBe(
+        "Biology and Medicine"
+      );
+    });
+
     it("only displays the projects that match the category", async () => {
       const wrapper = await mount(ProjectList, {
         localVue,
