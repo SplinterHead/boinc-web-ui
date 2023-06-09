@@ -22,13 +22,13 @@
             <b-dropdown-item @click="setCategory('')">Reset</b-dropdown-item>
           </b-nav-item-dropdown>
           <b-nav-item
-            v-if="filters.category != ''"
+            v-show="filters.category.toString() != ''"
             id="subcategory-label"
             disabled
             >Sub-Categories:</b-nav-item
           >
           <b-nav-item-dropdown
-            v-if="filters.category != ''"
+            v-show="filters.category.toString() != ''"
             id="subcategory-select"
             :text="
               filters.subCategory == ''

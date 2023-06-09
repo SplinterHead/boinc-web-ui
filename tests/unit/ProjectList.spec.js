@@ -124,7 +124,7 @@ describe("ProjectList.vue", () => {
       });
 
       await wrapper.vm.$nextTick;
-      expect(wrapper.find("#filter-bar").exists()).toBe(true);
+      expect(wrapper.find("#filter-bar").isVisible()).toBe(true);
     });
 
     it("builds a list of categories from the projects", async () => {
@@ -137,7 +137,7 @@ describe("ProjectList.vue", () => {
 
       await wrapper.vm.$nextTick;
       const categorySelect = wrapper.get("#category-select");
-      expect(categorySelect.exists()).toBe(true);
+      expect(categorySelect.isVisible()).toBe(true);
       expect(categorySelect.attributes("text")).toBe("Select...");
       expect(categorySelect.findAllComponents(BDropdownItem).length).toBe(3); // Allow for "reset" option
       expect(categorySelect.findAllComponents(BDropdownItem).at(0).text()).toBe(
@@ -154,14 +154,14 @@ describe("ProjectList.vue", () => {
       });
 
       await wrapper.vm.$nextTick;
-      expect(wrapper.find("#subcategory-select").exists()).toBe(false);
+      expect(wrapper.find("#subcategory-select").isVisible()).toBe(false);
 
       const categorySelect = wrapper.find("#category-select");
       const dropdownItems = categorySelect.findAllComponents(BDropdownItem);
 
       dropdownItems.at(0).vm.$emit("click");
       await wrapper.vm.$nextTick;
-      expect(wrapper.find("#subcategory-select").exists()).toBe(true);
+      expect(wrapper.find("#subcategory-select").isVisible()).toBe(true);
       const subCategorySelect = wrapper.get("#subcategory-select");
       expect(subCategorySelect.attributes("text")).toBe("Select...");
       expect(subCategorySelect.findAllComponents(BDropdownItem).length).toBe(3); // Allow for "reset" option
