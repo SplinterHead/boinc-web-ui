@@ -115,6 +115,18 @@ describe("ProjectList.vue", () => {
     };
     jest.spyOn(axios, "get").mockResolvedValue(sampleProjectsResponse);
 
+    it("displays a bar for filtering projects", async () => {
+      const wrapper = await shallowMount(ProjectList, {
+        localVue,
+        propsData: {
+          activeClient: { name: "test client", id: "123" },
+        },
+      });
+
+      await wrapper.vm.$nextTick;
+      expect(wrapper.find("#filter-bar").exists()).toBe(true);
+    });
+
     it("builds a list of categories from the projects", async () => {
       const wrapper = await shallowMount(ProjectList, {
         localVue,
@@ -124,11 +136,7 @@ describe("ProjectList.vue", () => {
       });
 
       await wrapper.vm.$nextTick;
-      const filterBar = wrapper.get("#filter-bar");
-      expect(filterBar.exists()).toBe(true);
-
-      await wrapper.vm.$nextTick;
-      const categorySelect = filterBar.get("#category-select");
+      const categorySelect = wrapper.get("#category-select");
       expect(categorySelect.exists()).toBe(true);
       expect(categorySelect.attributes("text")).toBe("Select...");
       expect(categorySelect.findAllComponents(BDropdownItem).length).toBe(3); // Allow for "reset" option
@@ -137,7 +145,7 @@ describe("ProjectList.vue", () => {
       );
     });
 
-    it("builds a list of sub-categories from the projects once category is selected", async () => {
+    it("builds a list of sub-categories from the projects once main category is selected", async () => {
       const wrapper = await shallowMount(ProjectList, {
         localVue,
         propsData: {
@@ -146,18 +154,23 @@ describe("ProjectList.vue", () => {
       });
 
       await wrapper.vm.$nextTick;
-      expect(wrapper.get("#subcategory-select").exists()).toBe(false);
-      // const subCategorySelect = wrapper.get("#subcategory-select");
-      // expect(subCategorySelect.exists()).toBe(false);
-      expect(subCategorySelect.exists()).toBe(filter);
-      expect(categorySelect.attributes("text")).toBe("Select...");
-      expect(categorySelect.findAllComponents(BDropdownItem).length).toBe(3); // Allow for "reset" option
-      expect(categorySelect.findAllComponents(BDropdownItem).at(0).text()).toBe(
-        "Biology and Medicine"
-      );
+      expect(wrapper.find("#subcategory-select").exists()).toBe(false);
+
+      const categorySelect = wrapper.find("#category-select");
+      const dropdownItems = categorySelect.findAllComponents(BDropdownItem);
+
+      dropdownItems.at(0).vm.$emit("click");
+      await wrapper.vm.$nextTick;
+      expect(wrapper.find("#subcategory-select").exists()).toBe(true);
+      const subCategorySelect = wrapper.get("#subcategory-select");
+      expect(subCategorySelect.attributes("text")).toBe("Select...");
+      expect(subCategorySelect.findAllComponents(BDropdownItem).length).toBe(3); // Allow for "reset" option
+      expect(
+        subCategorySelect.findAllComponents(BDropdownItem).at(0).text()
+      ).toBe("Biomedicine");
     });
 
-    it("only displays the projects that match the category", async () => {
+    it("only displays the projects that match the selected category", async () => {
       const wrapper = await mount(ProjectList, {
         localVue,
         propsData: {
@@ -189,6 +202,33 @@ describe("ProjectList.vue", () => {
       await wrapper.vm.$nextTick;
       projects = wrapper.findAllComponents(ProjectCard);
       expect(projects.length).toBe(3);
+    });
+
+    it("only displays the projects that match the category and subcategory", async () => {
+      const wrapper = await mount(ProjectList, {
+        localVue,
+        propsData: {
+          activeClient: { name: "test client", id: "123" },
+        },
+      });
+
+      await wrapper.vm.$nextTick;
+
+      const categorySelect = wrapper.find("#category-select");
+      const dropdownItems = categorySelect.findAllComponents(BDropdownItem);
+
+      dropdownItems.at(0).vm.$emit("click");
+      await wrapper.vm.$nextTick;
+
+      const subCategorySelect = wrapper.find("#subcategory-select");
+      const subDropdownItems =
+        subCategorySelect.findAllComponents(BDropdownItem);
+
+      // Category with 2 entries
+      subDropdownItems.at(0).vm.$emit("click");
+      await wrapper.vm.$nextTick;
+      const projects = wrapper.findAllComponents(ProjectCard);
+      expect(projects.length).toBe(1);
     });
   });
 });

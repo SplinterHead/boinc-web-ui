@@ -4,7 +4,7 @@
       <div v-if="allProjects.length == 0">No Projects found</div>
       <div v-else id="projects">
         <b-nav id="filter-bar">
-          <b-nav-item disabled>Categories:</b-nav-item>
+          <b-nav-item id="category-label" disabled>Categories:</b-nav-item>
           <b-nav-item-dropdown
             id="category-select"
             :text="
@@ -20,6 +20,31 @@
             </b-dropdown-item>
             <b-dropdown-divider />
             <b-dropdown-item @click="setCategory('')">Reset</b-dropdown-item>
+          </b-nav-item-dropdown>
+          <b-nav-item
+            v-if="filters.category != ''"
+            id="subcategory-label"
+            disabled
+            >Sub-Categories:</b-nav-item
+          >
+          <b-nav-item-dropdown
+            v-if="filters.category != ''"
+            id="subcategory-select"
+            :text="
+              filters.subCategory == ''
+                ? 'Select...'
+                : filters.subCategory.toString()
+            "
+          >
+            <b-dropdown-item
+              v-for="subCategory in subCategories"
+              :key="subCategory"
+              @click="setSubCategory(subCategory)"
+            >
+              {{ subCategory }}
+            </b-dropdown-item>
+            <b-dropdown-divider />
+            <b-dropdown-item @click="setSubCategory('')">Reset</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-nav>
         <div id="project-list">
@@ -54,6 +79,7 @@ export default {
       allProjects: [],
       filters: {
         category: "",
+        subCategory: "",
       },
     };
   },
@@ -72,19 +98,33 @@ export default {
     categories() {
       return new Set(this.allProjects.map((proj) => proj.general_area));
     },
+    subCategories() {
+      return new Set(this.filteredProjects.map((proj) => proj.specific_area));
+    },
     filteredProjects() {
       if (this.filters.category == "") {
         return this.allProjects;
       } else {
-        return this.allProjects.filter(
+        let projectsToRtn;
+        projectsToRtn = this.allProjects.filter(
           (project) => project.general_area == this.filters.category
         );
+        if (this.filters.subCategory != "") {
+          projectsToRtn = projectsToRtn.filter(
+            (project) => project.specific_area == this.filters.subCategory
+          );
+        }
+        return projectsToRtn;
       }
     },
   },
   methods: {
     setCategory(category) {
       this.filters.category = category;
+      this.filters.subCategory = "";
+    },
+    setSubCategory(subCategory) {
+      this.filters.subCategory = subCategory;
     },
   },
 };
