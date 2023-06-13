@@ -13,7 +13,7 @@ library.add([faApple, faLinux, faWindows]);
 
 import ProjectList from "@/components/ProjectList.vue";
 import ProjectCard from "@/components/project/ProjectCard.vue";
-import axios from "axios";
+import mockAxios from "jest-mock-axios";
 
 // create an extended `Vue` constructor
 const localVue = createLocalVue();
@@ -81,29 +81,53 @@ const sampleProjects = [
   },
 ];
 
+let wrapper;
+
+const filterBar = () => wrapper.get("#filter-bar");
+const categorySelect = () => wrapper.get("#category-select");
+const categorySelectItems = () =>
+  categorySelect().findAllComponents(BDropdownItem);
+const subCategorySelect = () => wrapper.get("#subcategory-select");
+const subCategorySelectItems = () =>
+  subCategorySelect().findAllComponents(BDropdownItem);
+const projectCards = () => wrapper.findAllComponents(ProjectCard);
+
+function createWrapper(propsData) {
+  wrapper = shallowMount(ProjectList, {
+    localVue,
+    propsData: propsData,
+  });
+}
+
+function createFullWrapper(propsData) {
+  wrapper = mount(ProjectList, {
+    localVue,
+    propsData: propsData,
+  });
+}
+
+afterEach(() => {
+  mockAxios.reset();
+  wrapper.destroy();
+});
+
 describe("ProjectList.vue", () => {
   describe("No projects returned from the API", () => {
     const noProjects = { status: 200, data: { projects: [] } };
-    jest.spyOn(axios, "get").mockResolvedValue(noProjects);
 
     it("displays 'Please choose a client' message when no client is active", () => {
-      const wrapper = shallowMount(ProjectList, {
-        localVue,
-        propsData: {
-          activeClient: {},
-        },
-      });
+      createWrapper({ activeClient: {} });
+
       expect(wrapper.text()).toBe("Please choose a client");
     });
 
-    it("display 'No Projects found' message", async () => {
-      const wrapper = await shallowMount(ProjectList, {
-        localVue,
-        propsData: {
-          activeClient: { name: "test client", id: "123" },
-        },
-      });
-      expect(axios.get).toHaveBeenCalledWith(expect.stringMatching(/.*=123/));
+    it("display 'No Projects found' message", () => {
+      createWrapper({ activeClient: { name: "test client", id: "123" } });
+
+      expect(mockAxios.get).toHaveBeenCalledWith(
+        expect.stringMatching(/.*=123/)
+      );
+      mockAxios.mockResponse(noProjects);
       expect(wrapper.text()).toBe("No Projects found");
     });
   });
@@ -113,141 +137,92 @@ describe("ProjectList.vue", () => {
       status: 200,
       data: { projects: sampleProjects },
     };
-    jest.spyOn(axios, "get").mockResolvedValue(sampleProjectsResponse);
 
     it("displays a bar for filtering projects", async () => {
-      const wrapper = await shallowMount(ProjectList, {
-        localVue,
-        propsData: {
-          activeClient: { name: "test client", id: "123" },
-        },
-      });
-
+      createWrapper({ activeClient: { name: "test client", id: "123" } });
+      mockAxios.mockResponse(sampleProjectsResponse);
       await wrapper.vm.$nextTick;
-      expect(wrapper.find("#filter-bar").isVisible()).toBe(true);
+
+      expect(filterBar().isVisible()).toBe(true);
     });
 
     it("builds a list of categories from the projects", async () => {
-      const wrapper = await shallowMount(ProjectList, {
-        localVue,
-        propsData: {
-          activeClient: { name: "test client", id: "123" },
-        },
-      });
-
+      createWrapper({ activeClient: { name: "test client", id: "123" } });
+      mockAxios.mockResponse(sampleProjectsResponse);
       await wrapper.vm.$nextTick;
-      const categorySelect = wrapper.get("#category-select");
-      expect(categorySelect.isVisible()).toBe(true);
-      expect(categorySelect.attributes("text")).toBe("Select...");
-      expect(categorySelect.findAllComponents(BDropdownItem).length).toBe(3); // Allow for "reset" option
-      expect(categorySelect.findAllComponents(BDropdownItem).at(0).text()).toBe(
-        "Biology and Medicine"
-      );
+
+      expect(categorySelect().isVisible()).toBe(true);
+      expect(categorySelect().attributes("text")).toBe("Select...");
+      expect(categorySelect().findAllComponents(BDropdownItem).length).toBe(3); // Allow for "reset" option
+      expect(
+        categorySelect().findAllComponents(BDropdownItem).at(0).text()
+      ).toBe("Biology and Medicine");
     });
 
     it("builds a list of sub-categories from the projects once main category is selected", async () => {
-      const wrapper = await shallowMount(ProjectList, {
-        localVue,
-        propsData: {
-          activeClient: { name: "test client", id: "123" },
-        },
-      });
-
+      createWrapper({ activeClient: { name: "test client", id: "123" } });
+      mockAxios.mockResponse(sampleProjectsResponse);
       await wrapper.vm.$nextTick;
-      expect(wrapper.find("#subcategory-select").isVisible()).toBe(false);
 
-      const categorySelect = wrapper.find("#category-select");
-      const dropdownItems = categorySelect.findAllComponents(BDropdownItem);
-
-      dropdownItems.at(0).vm.$emit("click");
+      expect(subCategorySelect().isVisible()).toBe(false);
+      categorySelectItems().at(0).vm.$emit("click");
       await wrapper.vm.$nextTick;
-      expect(wrapper.find("#subcategory-select").isVisible()).toBe(true);
-      const subCategorySelect = wrapper.get("#subcategory-select");
-      expect(subCategorySelect.attributes("text")).toBe("Select...");
-      expect(subCategorySelect.findAllComponents(BDropdownItem).length).toBe(3); // Allow for "reset" option
+
+      expect(subCategorySelect().isVisible()).toBe(true);
+      expect(subCategorySelect().attributes("text")).toBe("Select...");
+      expect(subCategorySelect().findAllComponents(BDropdownItem).length).toBe(
+        3
+      ); // Allow for "reset" option
       expect(
-        subCategorySelect.findAllComponents(BDropdownItem).at(0).text()
+        subCategorySelect().findAllComponents(BDropdownItem).at(0).text()
       ).toBe("Biomedicine");
     });
 
     it("maintains the full list of subcategories when one is selected", async () => {
-      const wrapper = await shallowMount(ProjectList, {
-        localVue,
-        propsData: {
-          activeClient: { name: "test client", id: "123" },
-        },
-      });
-      await wrapper.vm.$nextTick;
-      const categorySelect = wrapper.find("#category-select");
-      const dropdownItems = categorySelect.findAllComponents(BDropdownItem);
-      dropdownItems.at(0).vm.$emit("click");
+      createWrapper({ activeClient: { name: "test client", id: "123" } });
+      mockAxios.mockResponse(sampleProjectsResponse);
       await wrapper.vm.$nextTick;
 
-      const subCategorySelect = wrapper.get("#subcategory-select");
-      const subDropdownItems = subCategorySelect.findAllComponents(BDropdownItem);
-      subDropdownItems.at(0).vm.$emit("click");
+      categorySelectItems().at(0).vm.$emit("click");
       await wrapper.vm.$nextTick;
-      expect(subCategorySelect.findAllComponents(BDropdownItem).length).toBe(3);
+      subCategorySelectItems().at(0).vm.$emit("click");
+      await wrapper.vm.$nextTick;
+
+      expect(subCategorySelectItems().length).toBe(3);
     });
 
     it("only displays the projects that match the selected category", async () => {
-      const wrapper = await mount(ProjectList, {
-        localVue,
-        propsData: {
-          activeClient: { name: "test client", id: "123" },
-        },
-      });
-
+      createFullWrapper({ activeClient: { name: "test client", id: "123" } });
+      mockAxios.mockResponse(sampleProjectsResponse);
       await wrapper.vm.$nextTick;
-
-      const categorySelect = wrapper.find("#category-select");
-      const dropdownItems = categorySelect.findAllComponents(BDropdownItem);
-
-      let projects;
 
       // Category with 2 entries
-      dropdownItems.at(0).vm.$emit("click");
+      categorySelectItems().at(0).vm.$emit("click");
       await wrapper.vm.$nextTick;
-      projects = wrapper.findAllComponents(ProjectCard);
-      expect(projects.length).toBe(2);
+      expect(projectCards().length).toBe(2);
 
       // Category with 1 entry
-      dropdownItems.at(1).vm.$emit("click");
+      categorySelectItems().at(1).vm.$emit("click");
       await wrapper.vm.$nextTick;
-      projects = wrapper.findAllComponents(ProjectCard);
-      expect(projects.length).toBe(1);
+      expect(projectCards().length).toBe(1);
 
       // Reset to remove any category filter
-      dropdownItems.at(2).vm.$emit("click");
+      categorySelectItems().at(2).vm.$emit("click");
       await wrapper.vm.$nextTick;
-      projects = wrapper.findAllComponents(ProjectCard);
-      expect(projects.length).toBe(3);
+      expect(projectCards().length).toBe(3);
     });
 
     it("only displays the projects that match the category and subcategory", async () => {
-      const wrapper = await mount(ProjectList, {
-        localVue,
-        propsData: {
-          activeClient: { name: "test client", id: "123" },
-        },
-      });
-
+      createFullWrapper({ activeClient: { name: "test client", id: "123" } });
+      mockAxios.mockResponse(sampleProjectsResponse);
       await wrapper.vm.$nextTick;
 
-      const categorySelect = wrapper.find("#category-select");
-      const dropdownItems = categorySelect.findAllComponents(BDropdownItem);
-
-      dropdownItems.at(0).vm.$emit("click");
+      categorySelectItems().at(0).vm.$emit("click");
+      await wrapper.vm.$nextTick;
+      subCategorySelectItems().at(0).vm.$emit("click");
       await wrapper.vm.$nextTick;
 
-      const subCategorySelect = wrapper.find("#subcategory-select");
-      const subDropdownItems =
-        subCategorySelect.findAllComponents(BDropdownItem);
-
-      subDropdownItems.at(0).vm.$emit("click");
-      await wrapper.vm.$nextTick;
-      const projects = wrapper.findAllComponents(ProjectCard);
-      expect(projects.length).toBe(1);
+      expect(projectCards().length).toBe(1);
     });
   });
 });

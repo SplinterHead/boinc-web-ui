@@ -22,6 +22,8 @@ localVue.component("font-awesome-icon", FontAwesomeIcon);
 
 let wrapper;
 
+const cardTitle = () => wrapper.get(".card-title");
+const cardSubtitle = () => wrapper.get(".card-subtitle");
 const platforms = () => wrapper.get("#project-platforms");
 
 function createWrapper(propsData) {
@@ -43,10 +45,8 @@ describe("ProjectCard.vue", () => {
         description: "Test Project Description",
         platforms: [],
       });
-      expect(wrapper.get(".card-title").text()).toBe("Test Project");
-      expect(wrapper.get(".card-subtitle").text()).toBe(
-        "Test Project Description"
-      );
+      expect(cardTitle().text()).toBe("Test Project");
+      expect(cardSubtitle().text()).toBe("Test Project Description");
       expect(platforms().isVisible()).toBe(false);
     });
 

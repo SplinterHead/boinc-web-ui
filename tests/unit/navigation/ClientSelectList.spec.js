@@ -12,6 +12,8 @@ localVue.use(BootstrapVue);
 let wrapper;
 
 const clientDropDown = () => wrapper.find("#client-dropdown");
+const clientDropDownItems = () =>
+  clientDropDown().findAllComponents(BDropdownItem);
 const newClientBtn = () => wrapper.find("#new-client-btn");
 
 function createWrapper(propsData) {
@@ -48,9 +50,8 @@ describe("ClientSelectList.vue", () => {
     expect(clientDropDown().exists()).toBe(true);
     expect(clientDropDown().attributes("text")).toBe("Select Client...");
 
-    const dropdownItems = clientDropDown().findAllComponents(BDropdownItem);
-    expect(dropdownItems.length).toBe(4); // 4 accounts for the "Add New Client..." option
-    expect(dropdownItems.at(-1).text()).toBe("Add New Client...");
+    expect(clientDropDownItems().length).toBe(4); // 4 accounts for the "Add New Client..." option
+    expect(clientDropDownItems().at(-1).text()).toBe("Add New Client...");
   });
 
   it("truncates a long name", () => {
