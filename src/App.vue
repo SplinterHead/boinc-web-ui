@@ -8,6 +8,10 @@
       @select-pane="selectActivePane"
     />
     <div id="active-pane">
+      <ClientInfo
+        v-if="activeClient.name && activePane == 'clientinfo'"
+        :activeClient="activeClient"
+      />
       <ProjectList
         v-if="activeClient.name && activePane == 'projectlist'"
         :activeClient="activeClient"
@@ -18,12 +22,14 @@
 
 <script>
 import NavigationBar from "./components/NavigationBar.vue";
+import ClientInfo from "./components/ClientInfo.vue";
 import ProjectList from "./components/ProjectList.vue";
 
 export default {
   name: "App",
   components: {
     NavigationBar,
+    ClientInfo,
     ProjectList,
   },
   data() {

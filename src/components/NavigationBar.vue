@@ -17,6 +17,7 @@
       :clients="clients"
       @add-client="addClient"
       @select-client="setActiveClient"
+      @set-active-pane="setActivePane"
     />
     <b-button
       id="project-list-btn"
@@ -57,7 +58,7 @@ export default {
       this.$emit("select-pane", pane);
     },
   },
-  created() {
+  mounted() {
     axios
       .get(`${process.env.VUE_APP_API_URL}/clients/getall`)
       .then((response) => {

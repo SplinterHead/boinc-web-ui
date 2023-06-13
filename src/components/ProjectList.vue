@@ -72,7 +72,10 @@ export default {
     ProjectCard,
   },
   props: {
-    activeClient: Object,
+    activeClient: {
+      type: Object,
+      requried: true,
+    },
   },
   data() {
     return {

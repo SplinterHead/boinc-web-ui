@@ -11,6 +11,7 @@
           : activeClient.name | truncate(21, '...')
       "
       toggleText=""
+      @click="setActivePane()"
     >
       <b-dropdown-item
         v-for="client in clients"
@@ -54,6 +55,9 @@ export default {
     },
     setActiveClient(client) {
       this.$emit("select-client", client);
+    },
+    setActivePane() {
+      this.$emit("set-active-pane", "clientinfo");
     },
   },
   filters: {
