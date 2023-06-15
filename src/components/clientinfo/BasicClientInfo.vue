@@ -44,16 +44,10 @@ export default {
     if (this.activeClient.name) {
       axios
         .get(
-          `${process.env.VUE_APP_API_URL}/client/version?client=${this.activeClient.id}`
+          `${process.env.VUE_APP_API_URL}/client/basicinfo?client=${this.activeClient.id}`
         )
         .then((response) => {
           this.clientVersion = response.data.version;
-        });
-      axios
-        .get(
-          `${process.env.VUE_APP_API_URL}/client/info?client=${this.activeClient.id}`
-        )
-        .then((response) => {
           this.clientPlatform = response.data.host_info.os_name;
         });
     }

@@ -10,8 +10,7 @@ const localVue = createLocalVue();
 // install plugins as normal
 localVue.use(BootstrapVue);
 
-const sampleVersion = { version: { major: 1, minor: 2, patch: 3 } };
-const sampleHostInfo = { host_info: { os_name: "Windows" } };
+const sampleBasicInfo = { version: { major: 1, minor: 2, patch: 3 }, host_info: { os_name: "Windows" } };
 
 let wrapper;
 
@@ -38,16 +37,15 @@ describe("BasicClientInfo.vue", () => {
     it("includes the user-supplied server name", () => {
       createWrapper({ activeClient: basicProps });
 
+      expect(mockAxios.get).toHaveBeenCalledWith(
+        expect.stringMatching(/.*\/client\/basicinfo\?client=123456/)
+      );
       expect(clientCardTitle()).toBe("Test Server");
     });
 
     it("includes the client's version number", async () => {
       createWrapper({ activeClient: basicProps });
-
-      expect(mockAxios.get).toHaveBeenCalledWith(
-        expect.stringMatching(/.*\/client\/version\?client=123456/)
-      );
-      mockAxios.mockResponse({ status: 200, data: sampleVersion });
+      mockAxios.mockResponse({ status: 200, data: sampleBasicInfo });
       await wrapper.vm.$nextTick();
 
       expect(clientVersion().isVisible()).toBeTruthy();
@@ -56,18 +54,7 @@ describe("BasicClientInfo.vue", () => {
 
     it("includes the client's platform", async () => {
       createWrapper({ activeClient: basicProps });
-
-      expect(mockAxios.get).toHaveBeenCalledWith(
-        expect.stringMatching(/.*\/client\/info\?client=123456/)
-      );
-      mockAxios.mockResponse(
-        { status: 200, data: sampleVersion },
-        mockAxios.getReqByMatchUrl(/.*\/client\/version.*/)
-      );
-      mockAxios.mockResponse(
-        { status: 200, data: sampleHostInfo },
-        mockAxios.getReqByMatchUrl(/.*\/client\/info.*/)
-      );
+      mockAxios.mockResponse({ status: 200, data: sampleBasicInfo });
       await wrapper.vm.$nextTick();
 
       expect(clientPlatform().text()).toBe("Windows");

@@ -90,7 +90,7 @@ export default {
     if (this.activeClient.name) {
       axios
         .get(
-          `${process.env.VUE_APP_API_URL}/project/all?client=${this.activeClient.id}`
+          `${process.env.VUE_APP_API_URL}/projects/all?client=${this.activeClient.id}`
         )
         .then((response) => {
           this.allProjects = response.data.projects;
