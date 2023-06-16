@@ -4,6 +4,14 @@
       <div v-if="allProjects.length == 0">No Projects found</div>
       <div v-else id="projects">
         <b-nav id="filter-bar">
+          <b-nav-form>
+            <b-form-input
+              id="text-filter"
+              class="mr-sm-2"
+              placeholder="Search"
+              v-model="filters.searchString"
+            ></b-form-input>
+          </b-nav-form>
           <b-nav-item id="category-label" disabled>Categories:</b-nav-item>
           <b-nav-item-dropdown
             id="category-select"
@@ -83,6 +91,7 @@ export default {
       filters: {
         category: "",
         subCategory: "",
+        searchString: "",
       },
     };
   },
@@ -109,17 +118,28 @@ export default {
       );
     },
     filteredProjects() {
-      if (this.filters.category == "") {
+      if (this.filters.category == "" && this.filters.searchString == "") {
         return this.allProjects;
       } else {
-        let projectsToRtn;
-        projectsToRtn = this.allProjects.filter(
-          (project) => project.general_area == this.filters.category
-        );
-        if (this.filters.subCategory != "") {
+        let projectsToRtn = this.allProjects;
+
+        if (this.filters.searchString != "") {
+          let searchQuery = this.filters.searchString.toLowerCase();
           projectsToRtn = projectsToRtn.filter(
-            (project) => project.specific_area == this.filters.subCategory
+            (project) =>
+              project.name.toLowerCase().includes(searchQuery) ||
+              project.description.toLowerCase().includes(searchQuery)
           );
+        }
+        if (this.filters.category != "") {
+          projectsToRtn = projectsToRtn.filter(
+            (project) => project.general_area == this.filters.category
+          );
+          if (this.filters.subCategory != "") {
+            projectsToRtn = projectsToRtn.filter(
+              (project) => project.specific_area == this.filters.subCategory
+            );
+          }
         }
         return projectsToRtn;
       }

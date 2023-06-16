@@ -84,6 +84,7 @@ const sampleProjects = [
 let wrapper;
 
 const filterBar = () => wrapper.get("#filter-bar");
+const textSearchBox = () => filterBar().get("#text-filter");
 const categorySelect = () => wrapper.get("#category-select");
 const categorySelectItems = () =>
   categorySelect().findAllComponents(BDropdownItem);
@@ -141,88 +142,143 @@ describe("ProjectList.vue", () => {
     it("displays a bar for filtering projects", async () => {
       createWrapper({ activeClient: { name: "test client", id: "123" } });
       mockAxios.mockResponse(sampleProjectsResponse);
-      await wrapper.vm.$nextTick;
+      await wrapper.vm.$nextTick();
 
       expect(filterBar().isVisible()).toBe(true);
     });
 
-    it("builds a list of categories from the projects", async () => {
-      createWrapper({ activeClient: { name: "test client", id: "123" } });
-      mockAxios.mockResponse(sampleProjectsResponse);
-      await wrapper.vm.$nextTick;
+    describe("by text", () => {
+      it("displays a textbox for searching projects", async () => {
+        createFullWrapper({ activeClient: { name: "test client", id: "123" } });
+        mockAxios.mockResponse(sampleProjectsResponse);
+        await wrapper.vm.$nextTick();
 
-      expect(categorySelect().isVisible()).toBe(true);
-      expect(categorySelect().attributes("text")).toBe("Select...");
-      expect(categorySelect().findAllComponents(BDropdownItem).length).toBe(3); // Allow for "reset" option
-      expect(
-        categorySelect().findAllComponents(BDropdownItem).at(0).text()
-      ).toBe("Biology and Medicine");
+        expect(textSearchBox().isVisible()).toBe(true);
+      });
+
+      it("only displays the projects that contain matching text", async () => {
+        createFullWrapper({ activeClient: { name: "test client", id: "123" } });
+        mockAxios.mockResponse(sampleProjectsResponse);
+        await wrapper.vm.$nextTick();
+
+        textSearchBox().element.value = "Universe";
+        textSearchBox().trigger("input");
+        await wrapper.vm.$nextTick();
+
+        expect(projectCards().length).toBe(1);
+      });
+
+      it("matches text in a case-insensitive way", async () => {
+        createFullWrapper({ activeClient: { name: "test client", id: "123" } });
+        mockAxios.mockResponse(sampleProjectsResponse);
+        await wrapper.vm.$nextTick();
+
+        textSearchBox().element.value = "universe";
+        textSearchBox().trigger("input");
+        await wrapper.vm.$nextTick();
+
+        expect(projectCards().length).toBe(1);
+      });
     });
 
-    it("builds a list of sub-categories from the projects once main category is selected", async () => {
-      createWrapper({ activeClient: { name: "test client", id: "123" } });
-      mockAxios.mockResponse(sampleProjectsResponse);
-      await wrapper.vm.$nextTick;
+    describe("by category", () => {
+      it("builds a list of categories from the projects", async () => {
+        createWrapper({ activeClient: { name: "test client", id: "123" } });
+        mockAxios.mockResponse(sampleProjectsResponse);
+        await wrapper.vm.$nextTick();
 
-      expect(subCategorySelect().isVisible()).toBe(false);
-      categorySelectItems().at(0).vm.$emit("click");
-      await wrapper.vm.$nextTick;
+        expect(categorySelect().isVisible()).toBe(true);
+        expect(categorySelect().attributes("text")).toBe("Select...");
+        expect(categorySelect().findAllComponents(BDropdownItem).length).toBe(
+          3
+        ); // Allow for "reset" option
+        expect(
+          categorySelect().findAllComponents(BDropdownItem).at(0).text()
+        ).toBe("Biology and Medicine");
+      });
 
-      expect(subCategorySelect().isVisible()).toBe(true);
-      expect(subCategorySelect().attributes("text")).toBe("Select...");
-      expect(subCategorySelect().findAllComponents(BDropdownItem).length).toBe(
-        3
-      ); // Allow for "reset" option
-      expect(
-        subCategorySelect().findAllComponents(BDropdownItem).at(0).text()
-      ).toBe("Biomedicine");
+      it("builds a list of sub-categories from the projects once main category is selected", async () => {
+        createWrapper({ activeClient: { name: "test client", id: "123" } });
+        mockAxios.mockResponse(sampleProjectsResponse);
+        await wrapper.vm.$nextTick();
+
+        expect(subCategorySelect().isVisible()).toBe(false);
+        categorySelectItems().at(0).vm.$emit("click");
+        await wrapper.vm.$nextTick();
+
+        expect(subCategorySelect().isVisible()).toBe(true);
+        expect(subCategorySelect().attributes("text")).toBe("Select...");
+        expect(
+          subCategorySelect().findAllComponents(BDropdownItem).length
+        ).toBe(3); // Allow for "reset" option
+        expect(
+          subCategorySelect().findAllComponents(BDropdownItem).at(0).text()
+        ).toBe("Biomedicine");
+      });
+
+      it("maintains the full list of subcategories when one is selected", async () => {
+        createWrapper({ activeClient: { name: "test client", id: "123" } });
+        mockAxios.mockResponse(sampleProjectsResponse);
+        await wrapper.vm.$nextTick();
+
+        categorySelectItems().at(0).vm.$emit("click");
+        await wrapper.vm.$nextTick();
+        subCategorySelectItems().at(0).vm.$emit("click");
+        await wrapper.vm.$nextTick();
+
+        expect(subCategorySelectItems().length).toBe(3);
+      });
+
+      it("only displays the projects that match the selected category", async () => {
+        createFullWrapper({ activeClient: { name: "test client", id: "123" } });
+        mockAxios.mockResponse(sampleProjectsResponse);
+        await wrapper.vm.$nextTick();
+
+        // Category with 2 entries
+        categorySelectItems().at(0).vm.$emit("click");
+        await wrapper.vm.$nextTick();
+        expect(projectCards().length).toBe(2);
+
+        // Category with 1 entry
+        categorySelectItems().at(1).vm.$emit("click");
+        await wrapper.vm.$nextTick();
+        expect(projectCards().length).toBe(1);
+
+        // Reset to remove any category filter
+        categorySelectItems().at(2).vm.$emit("click");
+        await wrapper.vm.$nextTick();
+        expect(projectCards().length).toBe(3);
+      });
+
+      it("only displays the projects that match the category and subcategory", async () => {
+        createFullWrapper({ activeClient: { name: "test client", id: "123" } });
+        mockAxios.mockResponse(sampleProjectsResponse);
+        await wrapper.vm.$nextTick();
+
+        categorySelectItems().at(0).vm.$emit("click");
+        await wrapper.vm.$nextTick();
+        subCategorySelectItems().at(0).vm.$emit("click");
+        await wrapper.vm.$nextTick();
+
+        expect(projectCards().length).toBe(1);
+      });
     });
 
-    it("maintains the full list of subcategories when one is selected", async () => {
-      createWrapper({ activeClient: { name: "test client", id: "123" } });
-      mockAxios.mockResponse(sampleProjectsResponse);
-      await wrapper.vm.$nextTick;
+    describe("in combination", () => {
+      it("can use the text and category searches together", async () => {
+        createFullWrapper({ activeClient: { name: "test client", id: "123" } });
+        mockAxios.mockResponse(sampleProjectsResponse);
+        await wrapper.vm.$nextTick();
 
-      categorySelectItems().at(0).vm.$emit("click");
-      await wrapper.vm.$nextTick;
-      subCategorySelectItems().at(0).vm.$emit("click");
-      await wrapper.vm.$nextTick;
+        textSearchBox().element.value = "study";
+        textSearchBox().trigger("input");
+        await wrapper.vm.$nextTick();
 
-      expect(subCategorySelectItems().length).toBe(3);
-    });
+        categorySelectItems().at(0).vm.$emit("click");
+        await wrapper.vm.$nextTick();
 
-    it("only displays the projects that match the selected category", async () => {
-      createFullWrapper({ activeClient: { name: "test client", id: "123" } });
-      mockAxios.mockResponse(sampleProjectsResponse);
-      await wrapper.vm.$nextTick;
-
-      // Category with 2 entries
-      categorySelectItems().at(0).vm.$emit("click");
-      await wrapper.vm.$nextTick;
-      expect(projectCards().length).toBe(2);
-
-      // Category with 1 entry
-      categorySelectItems().at(1).vm.$emit("click");
-      await wrapper.vm.$nextTick;
-      expect(projectCards().length).toBe(1);
-
-      // Reset to remove any category filter
-      categorySelectItems().at(2).vm.$emit("click");
-      await wrapper.vm.$nextTick;
-      expect(projectCards().length).toBe(3);
-    });
-
-    it("only displays the projects that match the category and subcategory", async () => {
-      createFullWrapper({ activeClient: { name: "test client", id: "123" } });
-      mockAxios.mockResponse(sampleProjectsResponse);
-      await wrapper.vm.$nextTick;
-
-      categorySelectItems().at(0).vm.$emit("click");
-      await wrapper.vm.$nextTick;
-      subCategorySelectItems().at(0).vm.$emit("click");
-      await wrapper.vm.$nextTick;
-
-      expect(projectCards().length).toBe(1);
+        expect(projectCards().length).toBe(1);
+      })
     });
   });
 });

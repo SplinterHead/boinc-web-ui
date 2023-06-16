@@ -52,6 +52,9 @@ export default {
   methods: {
     addClient(e) {
       this.$emit("add-client", e);
+      if (this.clients.length == 1) {
+        this.setActiveClient(e);
+      }
     },
     setActiveClient(client) {
       this.$emit("select-client", client);

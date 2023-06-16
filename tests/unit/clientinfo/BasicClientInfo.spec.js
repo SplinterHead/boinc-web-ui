@@ -10,7 +10,10 @@ const localVue = createLocalVue();
 // install plugins as normal
 localVue.use(BootstrapVue);
 
-const sampleBasicInfo = { version: { major: 1, minor: 2, patch: 3 }, host_info: { os_name: "Windows" } };
+const sampleBasicInfo = {
+  version: { major: 1, minor: 2, patch: 3 },
+  host_info: { os_name: "Windows" },
+};
 
 let wrapper;
 
