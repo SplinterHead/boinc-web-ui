@@ -9,7 +9,7 @@ const localVue = createLocalVue();
 // install plugins as normal
 localVue.use(BootstrapVue);
 
-const props = {
+const testProps = {
   activeClient: {
     name: "Test Server",
     id: "123456",
@@ -41,20 +41,20 @@ afterEach(() => {
 describe("BasicClientInfo.vue", () => {
   describe("renders basic client info in a card", () => {
     it("includes the user-supplied server name", () => {
-      createWrapper(props);
+      createWrapper(testProps);
 
       expect(clientCardTitle()).toBe("Test Server");
     });
 
     it("includes the client's version number", () => {
-      createWrapper(props);
+      createWrapper(testProps);
 
       expect(clientVersion().isVisible()).toBeTruthy();
       expect(clientVersion().text()).toBe("v1.2.3");
     });
 
     it("includes the client's platform", () => {
-      createWrapper(props);
+      createWrapper(testProps);
 
       expect(clientPlatform().text()).toBe("Windows");
     });
