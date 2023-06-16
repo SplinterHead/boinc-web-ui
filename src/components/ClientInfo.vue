@@ -1,13 +1,14 @@
 <template>
   <div>
-    Client Info
-    <BasicClientInfo :activeClient="activeClient" />
+    <BasicClientInfo
+      :activeClient="activeClient"
+      :activeClientState="activeClientState"
+    />
   </div>
 </template>
 
 <script>
 import BasicClientInfo from "@/components/clientinfo/BasicClientInfo.vue";
-// import axios from "axios";
 
 export default {
   name: "ClientInfo",
@@ -15,7 +16,14 @@ export default {
     BasicClientInfo,
   },
   props: {
-    activeClient: {},
+    activeClient: {
+      type: Object,
+      required: true,
+    },
+    activeClientState: {
+      type: Object,
+      required: true,
+    },
   },
 };
 </script>

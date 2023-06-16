@@ -1,6 +1,5 @@
 import { createLocalVue, shallowMount } from "@vue/test-utils";
 import { BCard, BootstrapVue } from "bootstrap-vue";
-import mockAxios from "jest-mock-axios";
 
 import BasicClientInfo from "@/components/clientinfo/BasicClientInfo.vue";
 
@@ -10,9 +9,15 @@ const localVue = createLocalVue();
 // install plugins as normal
 localVue.use(BootstrapVue);
 
-const sampleBasicInfo = {
-  version: { major: 1, minor: 2, patch: 3 },
-  host_info: { os_name: "Windows" },
+const props = {
+  activeClient: {
+    name: "Test Server",
+    id: "123456",
+  },
+  activeClientState: {
+    version: { major: 1, minor: 2, patch: 3 },
+    host_info: { os_name: "Windows" },
+  },
 };
 
 let wrapper;
@@ -30,35 +35,26 @@ function createWrapper(propsData) {
 }
 
 afterEach(() => {
-  mockAxios.reset();
   wrapper.destroy();
 });
 
 describe("BasicClientInfo.vue", () => {
   describe("renders basic client info in a card", () => {
-    const basicProps = { name: "Test Server", id: "123456" };
     it("includes the user-supplied server name", () => {
-      createWrapper({ activeClient: basicProps });
+      createWrapper(props);
 
-      expect(mockAxios.get).toHaveBeenCalledWith(
-        expect.stringMatching(/.*\/client\/basicinfo\?client=123456/)
-      );
       expect(clientCardTitle()).toBe("Test Server");
     });
 
-    it("includes the client's version number", async () => {
-      createWrapper({ activeClient: basicProps });
-      mockAxios.mockResponse({ status: 200, data: sampleBasicInfo });
-      await wrapper.vm.$nextTick();
+    it("includes the client's version number", () => {
+      createWrapper(props);
 
       expect(clientVersion().isVisible()).toBeTruthy();
       expect(clientVersion().text()).toBe("v1.2.3");
     });
 
-    it("includes the client's platform", async () => {
-      createWrapper({ activeClient: basicProps });
-      mockAxios.mockResponse({ status: 200, data: sampleBasicInfo });
-      await wrapper.vm.$nextTick();
+    it("includes the client's platform", () => {
+      createWrapper(props);
 
       expect(clientPlatform().text()).toBe("Windows");
     });

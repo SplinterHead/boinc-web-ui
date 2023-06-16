@@ -278,7 +278,7 @@ describe("ProjectList.vue", () => {
         await wrapper.vm.$nextTick();
 
         expect(projectCards().length).toBe(1);
-      })
+      });
     });
   });
 });

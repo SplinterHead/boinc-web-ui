@@ -11,6 +11,7 @@
       <ClientInfo
         v-if="activeClient.name && activePane == 'clientinfo'"
         :activeClient="activeClient"
+        :activeClientState="activeClientState"
       />
       <ProjectList
         v-if="activeClient.name && activePane == 'projectlist'"
@@ -21,6 +22,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 import NavigationBar from "./components/NavigationBar.vue";
 import ClientInfo from "./components/ClientInfo.vue";
 import ProjectList from "./components/ProjectList.vue";
@@ -35,6 +38,7 @@ export default {
   data() {
     return {
       activeClient: {},
+      activeClientState: {},
       activePane: "",
       clients: [],
     };
@@ -43,8 +47,16 @@ export default {
     addClient(e) {
       this.clients.push(JSON.parse(JSON.stringify(e)));
     },
+    getActiveClientState() {
+      axios
+        .get(
+          `${process.env.VUE_APP_API_URL}/client/state?client=${this.activeClient.id}`
+        )
+        .then((response) => (this.activeClientState = response.data));
+    },
     selectActiveClient(client) {
       this.activeClient = client;
+      this.getActiveClientState();
     },
     selectActivePane(pane) {
       this.activePane = pane;
