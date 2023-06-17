@@ -33,7 +33,7 @@ const sampleProjects = [
     name: "SIDock@home",
     platforms: [
       {
-        name: "windows_x86_64",
+        name: "linux_x86_64",
       },
     ],
     specific_area: "Biomedicine",
@@ -91,6 +91,7 @@ const categorySelectItems = () =>
 const subCategorySelect = () => wrapper.get("#subcategory-select");
 const subCategorySelectItems = () =>
   subCategorySelect().findAllComponents(BDropdownItem);
+const platformToggle = () => wrapper.get("#platform-toggle");
 const projectCards = () => wrapper.findAllComponents(ProjectCard);
 
 function createWrapper(propsData) {
@@ -113,6 +114,11 @@ afterEach(() => {
 });
 
 describe("ProjectList.vue", () => {
+  const testProps = {
+    activeClient: { name: "test client", id: "123" },
+    activeClientPlatform: "linux_x86_64",
+  };
+
   describe("No projects returned from the API", () => {
     const noProjects = { status: 200, data: { projects: [] } };
 
@@ -123,7 +129,7 @@ describe("ProjectList.vue", () => {
     });
 
     it("display 'No Projects found' message", () => {
-      createWrapper({ activeClient: { name: "test client", id: "123" } });
+      createWrapper(testProps);
 
       expect(mockAxios.get).toHaveBeenCalledWith(
         expect.stringMatching(/.*=123/)
@@ -140,7 +146,7 @@ describe("ProjectList.vue", () => {
     };
 
     it("displays a bar for filtering projects", async () => {
-      createWrapper({ activeClient: { name: "test client", id: "123" } });
+      createWrapper(testProps);
       mockAxios.mockResponse(sampleProjectsResponse);
       await wrapper.vm.$nextTick();
 
@@ -149,7 +155,7 @@ describe("ProjectList.vue", () => {
 
     describe("by text", () => {
       it("displays a textbox for searching projects", async () => {
-        createFullWrapper({ activeClient: { name: "test client", id: "123" } });
+        createFullWrapper(testProps);
         mockAxios.mockResponse(sampleProjectsResponse);
         await wrapper.vm.$nextTick();
 
@@ -157,7 +163,7 @@ describe("ProjectList.vue", () => {
       });
 
       it("only displays the projects that contain matching text", async () => {
-        createFullWrapper({ activeClient: { name: "test client", id: "123" } });
+        createFullWrapper(testProps);
         mockAxios.mockResponse(sampleProjectsResponse);
         await wrapper.vm.$nextTick();
 
@@ -169,7 +175,7 @@ describe("ProjectList.vue", () => {
       });
 
       it("matches text in a case-insensitive way", async () => {
-        createFullWrapper({ activeClient: { name: "test client", id: "123" } });
+        createFullWrapper(testProps);
         mockAxios.mockResponse(sampleProjectsResponse);
         await wrapper.vm.$nextTick();
 
@@ -183,7 +189,7 @@ describe("ProjectList.vue", () => {
 
     describe("by category", () => {
       it("builds a list of categories from the projects", async () => {
-        createWrapper({ activeClient: { name: "test client", id: "123" } });
+        createWrapper(testProps);
         mockAxios.mockResponse(sampleProjectsResponse);
         await wrapper.vm.$nextTick();
 
@@ -198,7 +204,7 @@ describe("ProjectList.vue", () => {
       });
 
       it("builds a list of sub-categories from the projects once main category is selected", async () => {
-        createWrapper({ activeClient: { name: "test client", id: "123" } });
+        createWrapper(testProps);
         mockAxios.mockResponse(sampleProjectsResponse);
         await wrapper.vm.$nextTick();
 
@@ -217,7 +223,7 @@ describe("ProjectList.vue", () => {
       });
 
       it("maintains the full list of subcategories when one is selected", async () => {
-        createWrapper({ activeClient: { name: "test client", id: "123" } });
+        createWrapper(testProps);
         mockAxios.mockResponse(sampleProjectsResponse);
         await wrapper.vm.$nextTick();
 
@@ -230,7 +236,7 @@ describe("ProjectList.vue", () => {
       });
 
       it("only displays the projects that match the selected category", async () => {
-        createFullWrapper({ activeClient: { name: "test client", id: "123" } });
+        createFullWrapper(testProps);
         mockAxios.mockResponse(sampleProjectsResponse);
         await wrapper.vm.$nextTick();
 
@@ -251,7 +257,7 @@ describe("ProjectList.vue", () => {
       });
 
       it("only displays the projects that match the category and subcategory", async () => {
-        createFullWrapper({ activeClient: { name: "test client", id: "123" } });
+        createFullWrapper(testProps);
         mockAxios.mockResponse(sampleProjectsResponse);
         await wrapper.vm.$nextTick();
 
@@ -264,9 +270,32 @@ describe("ProjectList.vue", () => {
       });
     });
 
+    describe("by native platform", () => {
+      it("displays a toggle for filtering projects by platform", async () => {
+        createWrapper(testProps);
+        mockAxios.mockResponse(sampleProjectsResponse);
+        await wrapper.vm.$nextTick();
+
+        expect(platformToggle().isVisible()).toBe(true);
+      });
+
+      it("only displays the projects matching the current client's platform", async () => {
+        createFullWrapper(testProps);
+        mockAxios.mockResponse(sampleProjectsResponse);
+        await wrapper.vm.$nextTick();
+
+        const checkboxInput = platformToggle().get("input");
+        await checkboxInput.setChecked();
+
+        expect(wrapper.vm.filters.platform).toBe(true);
+
+        expect(projectCards().length).toBe(1);
+      });
+    });
+
     describe("in combination", () => {
       it("can use the text and category searches together", async () => {
-        createFullWrapper({ activeClient: { name: "test client", id: "123" } });
+        createFullWrapper(testProps);
         mockAxios.mockResponse(sampleProjectsResponse);
         await wrapper.vm.$nextTick();
 

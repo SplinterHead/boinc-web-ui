@@ -16,6 +16,7 @@
       <ProjectList
         v-if="activeClient.name && activePane == 'projectlist'"
         :activeClient="activeClient"
+        :activeClientPlatform="activeClientState.platform_name"
       />
     </div>
   </div>
