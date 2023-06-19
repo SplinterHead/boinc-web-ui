@@ -84,7 +84,7 @@ const sampleProjects = [
 let wrapper;
 
 const filterBar = () => wrapper.get("#filter-bar");
-const textSearchBox = () => filterBar().get("#text-filter");
+const textSearchBox = () => wrapper.get("#text-filter");
 const categorySelect = () => wrapper.get("#category-select");
 const categorySelectItems = () =>
   categorySelect().findAllComponents(BDropdownItem);

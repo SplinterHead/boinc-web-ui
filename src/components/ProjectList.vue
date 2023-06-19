@@ -3,66 +3,73 @@
     <div v-if="activeClient.name">
       <div v-if="allProjects.length == 0">No Projects found</div>
       <div v-else id="projects">
-        <b-nav id="filter-bar">
-          <b-nav-form>
-            <b-form-input
-              id="text-filter"
-              class="mr-sm-2"
-              placeholder="Search"
-              v-model="filters.searchString"
-            ></b-form-input>
-          </b-nav-form>
-          <b-nav-text id="category-label">Categories:</b-nav-text>
-          <b-nav-item-dropdown
-            id="category-select"
-            :text="
-              filters.category == '' ? 'Select...' : filters.category.toString()
-            "
-          >
-            <b-dropdown-item
-              v-for="category in categories"
-              :key="category"
-              @click="setCategory(category)"
+        <b-navbar id="filter-bar" toggleable="lg" variant="light">
+          <b-navbar-nav>
+            <b-nav-text id="category-label">Categories:</b-nav-text>
+            <b-nav-item-dropdown
+              id="category-select"
+              :text="
+                filters.category == ''
+                  ? 'Select...'
+                  : filters.category.toString()
+              "
             >
-              {{ category }}
-            </b-dropdown-item>
-            <b-dropdown-divider />
-            <b-dropdown-item @click="setCategory('')">Reset</b-dropdown-item>
-          </b-nav-item-dropdown>
-          <b-nav-text
-            v-show="filters.category.toString() != ''"
-            id="subcategory-label"
-            >Sub-Categories:</b-nav-text
-          >
-          <b-nav-item-dropdown
-            v-show="filters.category.toString() != ''"
-            id="subcategory-select"
-            :text="
-              filters.subCategory == ''
-                ? 'Select...'
-                : filters.subCategory.toString()
-            "
-          >
-            <b-dropdown-item
-              v-for="subCategory in subCategories"
-              :key="subCategory"
-              @click="setSubCategory(subCategory)"
+              <b-dropdown-item
+                v-for="category in categories"
+                :key="category"
+                @click="setCategory(category)"
+              >
+                {{ category }}
+              </b-dropdown-item>
+              <b-dropdown-divider />
+              <b-dropdown-item @click="setCategory('')">Reset</b-dropdown-item>
+            </b-nav-item-dropdown>
+            <b-nav-text
+              v-show="filters.category.toString() != ''"
+              id="subcategory-label"
+              >Sub-Categories:</b-nav-text
             >
-              {{ subCategory }}
-            </b-dropdown-item>
-            <b-dropdown-divider />
-            <b-dropdown-item @click="setSubCategory('')">Reset</b-dropdown-item>
-          </b-nav-item-dropdown>
-          <b-nav-form id="platform-select">
-            <b-form-checkbox
-              v-model="filters.platform"
-              id="platform-toggle"
-              :value="true"
+            <b-nav-item-dropdown
+              v-show="filters.category.toString() != ''"
+              id="subcategory-select"
+              :text="
+                filters.subCategory == ''
+                  ? 'Select...'
+                  : filters.subCategory.toString()
+              "
             >
-              Only Compatible
-            </b-form-checkbox>
-          </b-nav-form>
-        </b-nav>
+              <b-dropdown-item
+                v-for="subCategory in subCategories"
+                :key="subCategory"
+                @click="setSubCategory(subCategory)"
+              >
+                {{ subCategory }}
+              </b-dropdown-item>
+              <b-dropdown-divider />
+              <b-dropdown-item @click="setSubCategory('')"
+                >Reset</b-dropdown-item
+              >
+            </b-nav-item-dropdown>
+          </b-navbar-nav>
+          <b-navbar-nav class="ml-auto">
+            <b-nav-form>
+              <b-form-input
+                id="text-filter"
+                placeholder="Search"
+                v-model="filters.searchString"
+              ></b-form-input>
+            </b-nav-form>
+            <b-nav-form id="platform-select">
+              <b-form-checkbox
+                v-model="filters.platform"
+                id="platform-toggle"
+                :value="true"
+              >
+                Only Compatible
+              </b-form-checkbox>
+            </b-nav-form>
+          </b-navbar-nav>
+        </b-navbar>
         <div id="project-list">
           <ProjectCard
             v-for="project in filteredProjects"
@@ -173,7 +180,17 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+.nav-bar,
+nav li {
+  list-style-type: none;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#filter-bar {
+  justify-content: space-between;
+}
 .project-card {
   margin-bottom: 3px;
 }
