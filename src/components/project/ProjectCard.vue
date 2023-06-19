@@ -1,16 +1,29 @@
 <template>
-  <b-card :title="project.name" :sub-title="project.description">
-    <div id="project-platforms" v-show="translatedPlatforms.length > 0">
-      Platforms:
-      <span
-        v-for="platform in translatedPlatforms"
-        :key="platform"
-        :id="'platform-' + platform"
-        class="platform-icon"
-      >
-        <font-awesome-icon :icon="'fa-brands fa-' + platform" />
-      </span>
-    </div>
+  <b-card>
+    <b-row>
+      <b-col md="11">
+        <h4 class="card-title">{{ project.name }}</h4>
+        <b-card-text class="card-description">{{
+          project.description
+        }}</b-card-text>
+      </b-col>
+      <b-col md="1">
+        <div
+          id="project-platforms"
+          v-show="translatedPlatforms.length > 0"
+          h-align="center"
+        >
+          <span
+            v-for="platform in translatedPlatforms"
+            :key="platform"
+            :id="'platform-' + platform"
+            class="platform-icon"
+          >
+            <font-awesome-icon :icon="'fa-brands fa-' + platform" />
+          </span>
+        </div>
+      </b-col>
+    </b-row>
   </b-card>
 </template>
 
