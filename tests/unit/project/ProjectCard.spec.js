@@ -8,10 +8,12 @@ import {
   faLinux,
   faWindows,
 } from "@fortawesome/free-brands-svg-icons";
-
-library.add([faApple, faLinux, faWindows]);
+import mockAxios from "jest-mock-axios";
 
 import ProjectCard from "@/components/project/ProjectCard.vue";
+import ProjectAuthModal from "@/components/project/ProjectAuthModal.vue";
+
+library.add([faApple, faLinux, faWindows]);
 
 // create an extended `Vue` constructor
 const localVue = createLocalVue();

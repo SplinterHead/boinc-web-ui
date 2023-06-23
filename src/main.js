@@ -10,11 +10,11 @@ import {
   faWindows,
 } from "@fortawesome/free-brands-svg-icons";
 
-library.add([faApple, faLinux, faWindows]);
-Vue.component("font-awesome-icon", FontAwesomeIcon);
-
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
+
+library.add([faApple, faLinux, faWindows]);
+Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 Vue.use(BootstrapVue);
 

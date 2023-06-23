@@ -7,12 +7,8 @@
           project.description
         }}</b-card-text>
       </b-col>
-      <b-col md="1">
-        <div
-          id="project-platforms"
-          v-show="translatedPlatforms.length > 0"
-          h-align="center"
-        >
+      <b-col md="1" class="project-actions">
+        <div id="project-platforms" v-show="translatedPlatforms.length > 0">
           <span
             v-for="platform in translatedPlatforms"
             :key="platform"
