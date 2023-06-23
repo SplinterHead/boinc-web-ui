@@ -22,18 +22,51 @@
             <font-awesome-icon :icon="'fa-brands fa-' + platform" />
           </span>
         </div>
+        <b-button
+          variant="primary"
+          size="sm"
+          v-b-modal:[`project-${project.name}`]
+          >Add</b-button
+        >
+        <ProjectAuthModal
+          :project="project"
+          @project-auth="handleProjectAuth"
+        />
       </b-col>
     </b-row>
   </b-card>
 </template>
 
 <script>
+import axios from "axios";
+
+import ProjectAuthModal from "@/components/project/ProjectAuthModal.vue";
+
 export default {
   name: "ProjectCard",
+  components: {
+    ProjectAuthModal,
+  },
   props: {
+    clientId: {
+      type: String,
+      required: true,
+    },
     project: {
       type: Object,
       required: true,
+    },
+  },
+  methods: {
+    handleProjectAuth(auth) {
+      axios.post(
+        `${process.env.VUE_APP_API_URL}/projects/attach?client=${this.clientId}`,
+        {
+          name: this.project.name,
+          url: this.project.web_url,
+          key: auth,
+        }
+      );
     },
   },
   computed: {
@@ -58,5 +91,11 @@ export default {
 <style scoped>
 .platform-icon {
   padding-left: 5px;
+}
+
+.project-actions {
+  text-align: center;
+  vertical-align: middle;
+  margin: auto;
 }
 </style>

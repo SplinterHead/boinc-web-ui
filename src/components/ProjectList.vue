@@ -74,6 +74,7 @@
           <ProjectCard
             v-for="project in filteredProjects"
             :key="project.id"
+            :clientId="activeClient.id"
             :project="project"
             class="project-card"
           />

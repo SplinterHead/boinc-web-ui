@@ -25,11 +25,16 @@ let wrapper;
 const cardTitle = () => wrapper.get(".card-title");
 const cardDescription = () => wrapper.get(".card-description");
 const platforms = () => wrapper.get("#project-platforms");
+const registerBtn = () => wrapper.find("button");
+const childWrapper = () => wrapper.getComponent(ProjectAuthModal);
 
 function createWrapper(propsData) {
   wrapper = mount(ProjectCard, {
     localVue,
-    propsData: { project: propsData },
+    propsData: {
+      clientId: "123",
+      project: propsData,
+    },
   });
 }
 
@@ -75,6 +80,39 @@ describe("ProjectCard.vue", () => {
       expect(platforms().find("#platform-apple").exists()).toBe(false);
       expect(platforms().find("#platform-linux").exists()).toBe(true);
       expect(platforms().find("#platform-windows").exists()).toBe(true);
+    });
+
+    describe("allow the user to register a project on their client", () => {
+      it("displays a button to start the registration process", () => {
+        createWrapper({
+          name: "Test Project",
+          description: "Test Project Description",
+          platforms: [],
+        });
+        expect(registerBtn().isVisible()).toBe(true);
+        expect(registerBtn().text()).toBe("Add");
+      });
+
+      it("calls the API with the relevant project details to attach", async () => {
+        const testProject = {
+          name: "Test Project",
+          description: "Test Project Description",
+          web_url: "https://tesproject.com/test/",
+          platforms: [],
+        };
+        createWrapper(testProject);
+
+        await childWrapper().vm.$emit("project-auth", "token_1234");
+
+        expect(mockAxios.post).toHaveBeenCalledWith(
+          expect.stringMatching(/projects\/attach\?client=123/),
+          {
+            name: "Test Project",
+            url: "https://tesproject.com/test/",
+            key: "token_1234",
+          }
+        );
+      });
     });
   });
 });
