@@ -42,18 +42,28 @@ export default {
       activeClientState: {},
       activePane: "",
       clients: [],
+      timer: "",
     };
+  },
+  created() {
+    this.timer = setInterval(this.getActiveClientState, 5000);
+  },
+  beforeUnmount() {
+    clearInterval(this.timer);
   },
   methods: {
     addClient(e) {
       this.clients.push(JSON.parse(JSON.stringify(e)));
     },
     getActiveClientState() {
-      axios
-        .get(
-          `${process.env.VUE_APP_API_URL}/client/state?client=${this.activeClient.id}`
-        )
-        .then((response) => (this.activeClientState = response.data));
+      if (this.activeClient.id) {
+        console.log(`Refreshing data for client ${this.activeClient.id}`);
+        axios
+          .get(
+            `${process.env.VUE_APP_API_URL}/client/state?client=${this.activeClient.id}`
+          )
+          .then((response) => (this.activeClientState = response.data));
+      }
     },
     selectActiveClient(client) {
       this.activeClient = client;
