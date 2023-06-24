@@ -1,4 +1,4 @@
-import { createLocalVue, shallowMount } from "@vue/test-utils";
+import { createLocalVue, mount, shallowMount } from "@vue/test-utils";
 import { BootstrapVue } from "bootstrap-vue";
 
 import ClientProjectCard from "@/components/clientinfo/ClientProjectCard.vue";
@@ -68,8 +68,20 @@ localVue.use(BootstrapVue);
 
 let wrapper;
 
+const resultTable = () => wrapper.get("table");
+const resultTableRows = () => wrapper.get("tbody").findAll("tr");
+const firstRow = () => resultTableRows().at(0);
+const secondRow = () => resultTableRows().at(1);
+
 function createWrapper(propsData) {
   wrapper = shallowMount(ClientProjectCard, {
+    localVue,
+    propsData: propsData,
+  });
+}
+
+function createFullWrapper(propsData) {
+  wrapper = mount(ClientProjectCard, {
     localVue,
     propsData: propsData,
   });
@@ -84,5 +96,89 @@ describe("ClientProjectCard.vue", () => {
     createWrapper({ project: testProject });
 
     expect(wrapper.attributes("title")).toBe("World Community Grid");
+  });
+
+  describe("renders the work units", () => {
+    it("each work unit is displayed in a table", () => {
+      const testResults = [
+        { name: "test_work_unit_name", state: 0 },
+        { name: "test_work_unit_name_2", state: 0 },
+      ];
+      createFullWrapper({ project: testProject, results: testResults });
+
+      expect(resultTable().exists()).toBe(true);
+      expect(resultTableRows().length).toBe(2);
+
+      expect(firstRow().findAll("td").at(0).text()).toBe("test_work_unit_name");
+      expect(secondRow().findAll("td").at(0).text()).toBe(
+        "test_work_unit_name_2"
+      );
+    });
+
+    test.each([
+      { stateInt: 0, stateStr: "Assigned" },
+      { stateInt: 1, stateStr: "Downloading..." },
+      { stateInt: 2, stateStr: "Queued" },
+      { stateInt: 3, stateStr: "Execution Error" },
+      { stateInt: 4, stateStr: "Uploading..." },
+      { stateInt: 5, stateStr: "Complete" },
+      { stateInt: 6, stateStr: "Aborted" },
+      { stateInt: 7, stateStr: "Failed Upload" },
+      { stateInt: 8, stateStr: "Unknown" },
+    ])(
+      'displays "$stateStr" message when task state is $stateInt',
+      ({ stateInt, stateStr }) => {
+        const testResult = [{ name: "test_work_unit_name", state: stateInt }];
+        createFullWrapper({ project: testProject, results: testResult });
+
+        expect(firstRow().findAll("td").at(1).text()).toBe(stateStr);
+      }
+    );
+
+    it("displays active tasks with a progress bar", () => {
+      const testResults = [
+        { name: "test_work_unit_name", state: 2 },
+        {
+          name: "test_work_unit_name_2",
+          state: 2,
+          active_task: { active_task_state: 0 },
+        },
+      ];
+      createFullWrapper({ project: testProject, results: testResults });
+
+      expect(firstRow().findAll("td").at(1).text()).toBe("Queued");
+      expect(
+        secondRow()
+          .findAll("td")
+          .at(1)
+          .get("div[role='progressbar']")
+          .isVisible()
+      ).toBe(true);
+    });
+
+    test.each([
+      { stateInt: 0, variantName: "light" }, // Initilising
+      { stateInt: 1, variantName: "primary" }, // Running
+      { stateInt: 5, variantName: "warning" }, // Aborting
+      { stateInt: 8, variantName: "danger" }, // Quittung
+      { stateInt: 9, variantName: "secondary" }, // Suspended
+      { stateInt: 10, variantName: "success" }, // Copying
+    ])(
+      "displays $variantName progress bar when active task state is $stateInt",
+      ({ stateInt, variantName }) => {
+        const testResult = [
+          {
+            name: "test_work_unit_name",
+            state: 2,
+            active_task: { active_task_state: stateInt },
+          },
+        ];
+        createFullWrapper({ project: testProject, results: testResult });
+
+        expect(
+          firstRow().get("div[role='progressbar']").attributes("class")
+        ).toContain(`bg-${variantName}`);
+      }
+    );
   });
 });

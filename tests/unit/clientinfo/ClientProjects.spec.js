@@ -29,9 +29,25 @@ const testPropsWithProjects = {
     projects: [
       {
         project_name: "World Community Grid",
+        master_url: "https://www.worldcommunitygrid.org/",
       },
       {
         project_name: "Space Community Grid",
+        master_url: "https://www.spacecommunitygrid.org/",
+      },
+    ],
+    results: [
+      {
+        wu_name: "test_result_001",
+        project_url: "https://www.worldcommunitygrid.org/",
+      },
+      {
+        wu_name: "test_result_002",
+        project_url: "https://www.worldcommunitygrid.org/",
+      },
+      {
+        wu_name: "test_result_003",
+        project_url: "https://www.spacecommunitygrid.org/",
       },
     ],
   },

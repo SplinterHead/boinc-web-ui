@@ -7,7 +7,8 @@
       <ClientProjectCard
         v-for="project in activeClientState.projects"
         :key="project.name"
-        :project="{ project: project }"
+        :project="project"
+        :results="activeClientState.results"
       />
     </div>
   </b-card>
