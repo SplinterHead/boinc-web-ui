@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1>Projects</h1>
     <div v-if="activeClient.name">
       <div v-if="allProjects.length == 0">No Projects found</div>
       <div v-else id="projects">
