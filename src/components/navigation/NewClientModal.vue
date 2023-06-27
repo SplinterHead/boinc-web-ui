@@ -80,7 +80,7 @@ export default {
       await axios
         .post(`${process.env.VUE_APP_API_URL}/clients/add`, this.client)
         .then((response) => {
-          this.client["clientId"] = response.data.client_id;
+          this.client.id = response.data.client_id;
           this.$emit("add-client", this.client);
           this.$bvModal.hide("new-client-modal");
           this.resetForm();
