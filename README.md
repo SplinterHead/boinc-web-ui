@@ -1,31 +1,33 @@
-# BOINC UI
+# BOINC Web UI
 
-A web interface buit on Vue and Bootstrap, for managing a headless BOINC client.
+A simple Web UI for managing multiple BOINC clients. This is born from wanting to use the basic BOINC client docker image to execute work items, but not have a desktop application to manage them.
 
-## Project setup
-```
-npm install
-```
+## Introdution
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+This project intends to make it simple and inviting to connect all of your BOINC clients in one simple web-based dashboard
 
-### Compiles and minifies for production
-```
-npm run build
-```
 
-### Run your unit tests
-```
-npm run test:unit
-```
+## Features
 
-### Lints and fixes files
-```
-npm run lint
-```
+* Supports multiple clients
+* Allows registering a client to a new project
+* Overview of the currently attached projects and the work items
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+#### Roadmap
+
+* Manage a project's state (pause, resume, disconnect)
+* Message list
+* Client Preferences
+* Account Manager
+
+## See it in action
+
+![New Client Modal](docs/img/new_client_modal.png)
+_Add a new client_
+
+![Basic Client View](docs/img/client_info.png)
+_See the client's state_
+
+![Project List](docs/img/project_list.png)
+_View, search and join projects_
+
