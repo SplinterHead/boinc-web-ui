@@ -57,7 +57,6 @@ export default {
     },
     getActiveClientState() {
       if (this.activeClient.id) {
-        console.log(`Refreshing data for client ${this.activeClient.id}`);
         axios
           .get(
             `${process.env.VUE_APP_API_URL}/client/state?client=${this.activeClient.id}`

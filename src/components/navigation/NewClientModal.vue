@@ -71,18 +71,21 @@ export default {
         password: "",
       },
       loading: false,
+      stateClient: {},
     };
   },
   methods: {
-    async emitDataAndReset(e) {
-      e.preventDefault();
+    async emitDataAndReset() {
       this.loading = true;
       await axios
         .post(`${process.env.VUE_APP_API_URL}/clients/add`, this.client)
         .then((response) => {
-          this.client.id = response.data.client_id;
-          this.$emit("add-client", this.client);
-          this.$bvModal.hide("new-client-modal");
+          this.stateClient = {
+            hostname: this.client.hostname,
+            id: response.data.client_id,
+            name: this.client.name,
+          };
+          this.$emit("add-client", this.stateClient);
           this.resetForm();
         })
         .catch((error) => {

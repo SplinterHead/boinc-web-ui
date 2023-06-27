@@ -2,7 +2,6 @@ import { createLocalVue, shallowMount } from "@vue/test-utils";
 import { BootstrapVue } from "bootstrap-vue";
 
 import ClientProjects from "@/components/clientinfo/ClientProjects.vue";
-import ClientProjectCard from "@/components/clientinfo/ClientProjectCard.vue";
 
 // create an extended `Vue` constructor
 const localVue = createLocalVue();
@@ -36,26 +35,10 @@ const testPropsWithProjects = {
         master_url: "https://www.spacecommunitygrid.org/",
       },
     ],
-    results: [
-      {
-        wu_name: "test_result_001",
-        project_url: "https://www.worldcommunitygrid.org/",
-      },
-      {
-        wu_name: "test_result_002",
-        project_url: "https://www.worldcommunitygrid.org/",
-      },
-      {
-        wu_name: "test_result_003",
-        project_url: "https://www.spacecommunitygrid.org/",
-      },
-    ],
   },
 };
 
 let wrapper;
-
-const projectCards = () => wrapper.findAllComponents(ClientProjectCard);
 
 function createWrapper(propsData) {
   wrapper = shallowMount(ClientProjects, {
@@ -73,11 +56,5 @@ describe("ClientProjects.vue", () => {
     createWrapper(testPropsNoProjects);
 
     expect(wrapper.text()).toBe("This client is not attached to any projects");
-  });
-
-  it("renderd a list of ClientProjectCards when client has projects", () => {
-    createWrapper(testPropsWithProjects);
-
-    expect(projectCards().length).toBe(2);
   });
 });

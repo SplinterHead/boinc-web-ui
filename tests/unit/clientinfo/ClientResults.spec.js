@@ -1,7 +1,7 @@
 import { createLocalVue, mount, shallowMount } from "@vue/test-utils";
 import { BootstrapVue } from "bootstrap-vue";
 
-import ClientProjectCard from "@/components/clientinfo/ClientProjectCard.vue";
+import ClientResults from "@/components/clientinfo/ClientResults.vue";
 
 // create an extended `Vue` constructor
 const localVue = createLocalVue();
@@ -72,16 +72,18 @@ const resultTable = () => wrapper.get("table");
 const resultTableRows = () => wrapper.get("tbody").findAll("tr");
 const firstRow = () => resultTableRows().at(0);
 const secondRow = () => resultTableRows().at(1);
+const firstRowProjectName = () => firstRow().findAll("td").at(1);
+const firstRowProgressBar = () => firstRow().findAll("td").at(2);
 
 function createWrapper(propsData) {
-  wrapper = shallowMount(ClientProjectCard, {
+  wrapper = shallowMount(ClientResults, {
     localVue,
     propsData: propsData,
   });
 }
 
 function createFullWrapper(propsData) {
-  wrapper = mount(ClientProjectCard, {
+  wrapper = mount(ClientResults, {
     localVue,
     propsData: propsData,
   });
@@ -91,11 +93,11 @@ afterEach(() => {
   wrapper.destroy();
 });
 
-describe("ClientProjectCard.vue", () => {
-  it("renders the project title", () => {
-    createWrapper({ project: testProject });
+describe("ClientResults.vue", () => {
+  it("renders the card title", () => {
+    createWrapper({ projects: [testProject] });
 
-    expect(wrapper.attributes("title")).toBe("World Community Grid");
+    expect(wrapper.attributes("title")).toBe("Tasks");
   });
 
   describe("renders the work units", () => {
@@ -104,7 +106,7 @@ describe("ClientProjectCard.vue", () => {
         { name: "test_work_unit_name", state: 0 },
         { name: "test_work_unit_name_2", state: 0 },
       ];
-      createFullWrapper({ project: testProject, results: testResults });
+      createFullWrapper({ projects: [testProject], results: testResults });
 
       expect(resultTable().exists()).toBe(true);
       expect(resultTableRows().length).toBe(2);
@@ -113,6 +115,19 @@ describe("ClientProjectCard.vue", () => {
       expect(secondRow().findAll("td").at(0).text()).toBe(
         "test_work_unit_name_2"
       );
+    });
+
+    it("displays the project name for the task", () => {
+      const testResults = [
+        {
+          name: "test_work_unit_name",
+          state: 0,
+          project_url: "http://www.worldcommunitygrid.org/",
+        },
+      ];
+      createFullWrapper({ projects: [testProject], results: testResults });
+
+      expect(firstRowProjectName().text()).toBe(testProject.project_name);
     });
 
     test.each([
@@ -129,9 +144,9 @@ describe("ClientProjectCard.vue", () => {
       'displays "$stateStr" message when task state is $stateInt',
       ({ stateInt, stateStr }) => {
         const testResult = [{ name: "test_work_unit_name", state: stateInt }];
-        createFullWrapper({ project: testProject, results: testResult });
+        createFullWrapper({ projects: [testProject], results: testResult });
 
-        expect(firstRow().findAll("td").at(1).text()).toBe(stateStr);
+        expect(firstRowProgressBar().text()).toBe(stateStr);
       }
     );
 
@@ -144,13 +159,13 @@ describe("ClientProjectCard.vue", () => {
           active_task: { active_task_state: 0 },
         },
       ];
-      createFullWrapper({ project: testProject, results: testResults });
+      createFullWrapper({ projects: [testProject], results: testResults });
 
-      expect(firstRow().findAll("td").at(1).text()).toBe("Queued");
+      expect(firstRowProgressBar().text()).toBe("Queued");
       expect(
         secondRow()
           .findAll("td")
-          .at(1)
+          .at(2)
           .get("div[role='progressbar']")
           .isVisible()
       ).toBe(true);
@@ -173,7 +188,7 @@ describe("ClientProjectCard.vue", () => {
             active_task: { active_task_state: stateInt },
           },
         ];
-        createFullWrapper({ project: testProject, results: testResult });
+        createFullWrapper({ projects: [testProject], results: testResult });
 
         expect(
           firstRow().get("div[role='progressbar']").attributes("class")

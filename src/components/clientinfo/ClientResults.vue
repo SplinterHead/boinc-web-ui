@@ -1,5 +1,5 @@
 <template>
-  <b-card :title="project.project_name">
+  <b-card title="Tasks">
     <b-table
       :fields="fields"
       :items="results"
@@ -11,6 +11,13 @@
       label-sort-desc=""
       label-sort-clear=""
     >
+      <template v-slot:cell(project)="data">
+        {{
+          data.item.project_url
+            ? getProjectName(data.item.project_url).project_name
+            : "Unknown Project"
+        }}
+      </template>
       <template v-slot:cell(progress)="data">
         <b-progress
           v-if="data.item.active_task"
@@ -25,20 +32,18 @@
         />
         <span v-else>{{ decodeTaskState(data.item.state).state }}</span>
       </template>
-      <template v-slot:[`cell(active_task.active_task_state)`]="data">
-        {{ decodeActiveState(data.value).status }}
-      </template>
     </b-table>
   </b-card>
 </template>
 
 <script>
 export default {
-  name: "ClientProjectCard",
+  name: "ClientResults",
   props: {
-    project: {
-      type: Object,
-      required: true,
+    projects: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
     results: {
       type: Array,
@@ -48,10 +53,18 @@ export default {
   },
   data() {
     return {
-      fields: [{ key: "name", sortable: true }, "progress"],
+      fields: [
+        { key: "name", sortable: true },
+        { key: "project", sortable: true },
+        "progress",
+      ],
     };
   },
   methods: {
+    getProjectName(projectUrl) {
+      return this.projects.find((project) => project.master_url == projectUrl);
+      // return projectUrl;
+    },
     decodeTaskState(state) {
       // NEW = 0  # New result
       // FILES_DOWNLOADING = (
