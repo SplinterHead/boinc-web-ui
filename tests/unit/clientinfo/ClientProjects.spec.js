@@ -5,13 +5,17 @@ import mockAxios from "jest-mock-axios";
 import ClientProjects from "@/components/clientinfo/ClientProjects.vue";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRotateLeft,
+  faPause,
+  faPlay,
+} from "@fortawesome/free-solid-svg-icons";
 
 // create an extended `Vue` constructor
 const localVue = createLocalVue();
 
 // install plugins as normal
-library.add([faPause, faPlay]);
+library.add([faArrowRotateLeft, faPause, faPlay]);
 localVue.component("font-awesome-icon", FontAwesomeIcon);
 localVue.use(BootstrapVue);
 
@@ -155,45 +159,71 @@ describe("ClientProjects.vue", () => {
   });
 
   describe("project controls", () => {
-    it("displays a pause button when the project is active", () => {
-      createFullWrapper(testPropsWithProjects);
+    describe("are rendered correctly", () => {
+      it("displays a pause button when the project is active", () => {
+        createFullWrapper(testPropsWithProjects);
 
-      expect(firstRowProjectControls().at(0).attributes("class")).toContain(
-        "fa-pause"
-      );
-    });
-    it("displays a resume button when the project is suspended", () => {
-      createFullWrapper(testPropsSuspendedProjects);
+        expect(firstRowProjectControls().at(0).attributes("class")).toContain(
+          "fa-pause"
+        );
+      });
 
-      expect(firstRowProjectControls().at(0).attributes("class")).toContain(
-        "fa-play"
-      );
-    });
+      it("displays a resume button when the project is suspended", () => {
+        createFullWrapper(testPropsSuspendedProjects);
 
-    it("calls the suspend API endpoint when the pause button is clicked", () => {
-      createFullWrapper(testPropsWithProjects);
+        expect(firstRowProjectControls().at(0).attributes("class")).toContain(
+          "fa-play"
+        );
+      });
 
-      firstRowProjectControls().at(0).trigger("click");
+      it("displays a reset button for the project", () => {
+        createFullWrapper(testPropsWithProjects);
 
-      expect(mockAxios.post).toHaveBeenCalledWith(
-        expect.stringMatching(/projects\/suspend\?client=123/),
-        {
-          url: "http://www.worldcommunitygrid.org/",
-        }
-      );
+        expect(firstRowProjectControls().at(1).attributes("class")).toContain(
+          "fa-arrow-rotate-left"
+        );
+      });
     });
 
-    it("calls the resume API endpoint when the play button is clicked", () => {
-      createFullWrapper(testPropsSuspendedProjects);
+    describe("are interactive", () => {
+      it("calls the suspend API endpoint when the pause button is clicked", () => {
+        createFullWrapper(testPropsWithProjects);
 
-      firstRowProjectControls().at(0).trigger("click");
+        firstRowProjectControls().at(0).trigger("click");
 
-      expect(mockAxios.post).toHaveBeenCalledWith(
-        expect.stringMatching(/projects\/resume\?client=123/),
-        {
-          url: "http://www.worldcommunitygrid.org/",
-        }
-      );
+        expect(mockAxios.post).toHaveBeenCalledWith(
+          expect.stringMatching(/projects\/suspend\?client=123/),
+          {
+            url: "http://www.worldcommunitygrid.org/",
+          }
+        );
+      });
+
+      it("calls the resume API endpoint when the play button is clicked", () => {
+        createFullWrapper(testPropsSuspendedProjects);
+
+        firstRowProjectControls().at(0).trigger("click");
+
+        expect(mockAxios.post).toHaveBeenCalledWith(
+          expect.stringMatching(/projects\/resume\?client=123/),
+          {
+            url: "http://www.worldcommunitygrid.org/",
+          }
+        );
+      });
+
+      it("calls the reset API endpoint when the reset button is clicked", () => {
+        createFullWrapper(testPropsWithProjects);
+
+        firstRowProjectControls().at(1).trigger("click");
+
+        expect(mockAxios.post).toHaveBeenCalledWith(
+          expect.stringMatching(/projects\/reset\?client=123/),
+          {
+            url: "http://www.worldcommunitygrid.org/",
+          }
+        );
+      });
     });
   });
 });

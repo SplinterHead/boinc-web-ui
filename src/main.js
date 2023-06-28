@@ -4,7 +4,11 @@ import { BootstrapVue } from "bootstrap-vue";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRotateLeft,
+  faPause,
+  faPlay,
+} from "@fortawesome/free-solid-svg-icons";
 import {
   faApple,
   faLinux,
@@ -14,7 +18,7 @@ import {
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 
-library.add([faPause, faPlay, faApple, faLinux, faWindows]);
+library.add([faArrowRotateLeft, faPause, faPlay, faApple, faLinux, faWindows]);
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 Vue.use(BootstrapVue);
