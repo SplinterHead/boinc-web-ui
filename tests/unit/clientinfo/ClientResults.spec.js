@@ -15,8 +15,8 @@ localVue.use(BootstrapVue);
 
 let wrapper;
 
-const resultTable = () => wrapper.get("table");
-const resultTableRows = () => wrapper.get("tbody").findAll("tr");
+const resultTable = () => wrapper.find("table");
+const resultTableRows = () => resultTable().get("tbody").findAll("tr");
 const firstRow = () => resultTableRows().at(0);
 const secondRow = () => resultTableRows().at(1);
 const firstRowProjectName = () => firstRow().findAll("td").at(1);
@@ -48,6 +48,15 @@ describe("ClientResults.vue", () => {
   });
 
   describe("renders the work units", () => {
+    it("displays the 'no tasks' message when there is no work", () => {
+      createFullWrapper({ projects: [testProject], results: [] });
+
+      expect(resultTable().exists()).toBe(false);
+      expect(wrapper.text()).toContain("This client has no work to do");
+      expect(wrapper.text()).toContain(
+        "Check it is attached to projects and that they aren't paused"
+      );
+    });
     it("each work unit is displayed in a table", () => {
       const testResults = [
         { name: "test_work_unit_name", state: 0 },

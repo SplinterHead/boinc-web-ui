@@ -1,6 +1,12 @@
 <template>
   <b-card title="Tasks">
+    <div id="no-projects-msg" v-if="results.length == 0">
+      This client has no work to do
+      <p />
+      Check it is attached to projects and that they aren't paused
+    </div>
     <b-table
+      v-else
       :fields="fields"
       :items="results"
       sort-by="active_task.fraction_done"

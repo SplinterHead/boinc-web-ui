@@ -119,10 +119,22 @@ describe("ClientProjects.vue", () => {
     expect(wrapper.attributes("title")).toBe("Projects");
   });
 
-  it("renders the 'no projects' message when client has no projects", () => {
-    createWrapper(testPropsNoProjects);
+  describe("project details are renedered", () => {
+    it("the 'no projects' message when client has no projects", () => {
+      createWrapper(testPropsNoProjects);
 
-    expect(wrapper.text()).toBe("This client is not attached to any projects");
+      expect(wrapper.text()).toBe(
+        "This client is not attached to any projects"
+      );
+    });
+
+    it("the list of project names", () => {
+      createFullWrapper(testPropsWithProjects);
+
+      expect(projectTable().exists()).toBe(true);
+      expect(projectTableRows().length).toBe(1);
+      expect(firstRowProjectName().text()).toBe("World Community Grid");
+    });
   });
 
   it("renders a list of project names", () => {

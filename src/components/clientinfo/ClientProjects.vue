@@ -1,10 +1,10 @@
 <template>
   <b-card title="Projects">
-    <div id="no-projects-msg" v-show="activeClientState.projects.length == 0">
+    <div id="no-projects-msg" v-if="activeClientState.projects.length == 0">
       This client is not attached to any projects
     </div>
     <b-table
-      v-show="activeClientState.projects.length > 0"
+      v-else
       :fields="fields"
       :items="activeClientState.projects"
       small

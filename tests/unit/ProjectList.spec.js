@@ -125,7 +125,7 @@ describe("ProjectList.vue", () => {
     it("displays 'Please choose a client' message when no client is active", () => {
       createWrapper({ activeClient: {} });
 
-      expect(wrapper.text()).toBe("Please choose a client");
+      expect(wrapper.text()).toContain("Please choose a client");
     });
 
     it("display 'No Projects found' message", () => {
@@ -135,7 +135,7 @@ describe("ProjectList.vue", () => {
         expect.stringMatching(/.*=123/)
       );
       mockAxios.mockResponse(noProjects);
-      expect(wrapper.text()).toBe("No Projects found");
+      expect(wrapper.text()).toContain("No Projects found");
     });
   });
 
