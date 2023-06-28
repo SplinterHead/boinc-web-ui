@@ -1,0 +1,38 @@
+# Contribution Guide
+
+## Setting Up
+
+This project is built on VueJS v2 and uses vue-test-utils for unit testing
+
+Everything should be installed via 
+```bash
+npm install
+```
+
+## Contributing
+
+This project has been created with a TDD approach (though not strictly) to make sure it is as robust as possible. 
+
+When adding a new feature / fixing a bug, please make sure there is a supporting test (where relevant)
+
+Tests have been written with the following ideology:
+- How components are rendered:
+  >  _Given a component with state X, Y should be displayed_
+
+- How components react to user input:
+  > _Given a user clicks X, Y should happen_
+
+To run the current app:
+```bash
+npm run serve
+```
+
+This can simultaneously run while developing and executing tests
+```bash
+npm run test:unit
+```
+
+Finally, the codebase must be linted by ESLint at all times
+```bash
+npm run lint
+```

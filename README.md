@@ -31,3 +31,22 @@ _See the client's state_
 ![Project List](docs/img/project_list.png)
 _View, search and join projects_
 
+## Deploy it yourself
+
+While work is currently underway to create a simplified Docker image for this project, it can be run independantly already.
+
+### BOINC API
+
+1. Clone the [SplinterHead/boinc-api](https://github.com/SplinterHead/boinc-api) repo
+2. Install dependencies
+  > `poetry install`
+3. Run the API
+  > `FLASK_APP=src/boinc_api/app.py poetry run flask run`
+
+### BOINC Web UI
+
+1. Clone the [SplinterHead/boinc-web-ui](https://github.com/SplinterHead/boinc-web-ui) repo
+2. Install the dependencies
+  > `npm install`
+3. Run the frontend
+  > `npm run serve`
