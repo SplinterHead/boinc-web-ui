@@ -15,6 +15,9 @@
       label-sort-desc=""
       label-sort-clear=""
     >
+      <template v-slot:cell(resource_share)="data">
+        {{ data.value }}%
+      </template>
       <template v-slot:cell(operations)="data">
         <font-awesome-icon
           id="project-suspend"
@@ -83,6 +86,7 @@ export default {
       },
       fields: [
         "project_name",
+        "resource_share",
         { key: "operations", label: "", class: "project-controls" },
       ],
     };

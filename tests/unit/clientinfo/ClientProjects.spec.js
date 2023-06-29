@@ -102,8 +102,9 @@ const projectTable = () => wrapper.get("table");
 const projectTableRows = () => wrapper.get("tbody").findAll("tr");
 const firstRow = () => projectTableRows().at(0);
 const firstRowProjectName = () => firstRow().findAll("td").at(0);
+const firstRowResourceShare = () => firstRow().findAll("td").at(1);
 const firstRowProjectControls = () =>
-  firstRow().findAll("td").at(1).findAllComponents(FontAwesomeIcon);
+  firstRow().findAll("td").at(2).findAllComponents(FontAwesomeIcon);
 
 function createWrapper(propsData) {
   wrapper = shallowMount(ClientProjects, {
@@ -131,6 +132,10 @@ function createFullWrapper(propsData) {
   });
 }
 
+beforeEach(() => {
+  process.env.BOOTSTRAP_VUE_NO_WARN = true;
+});
+
 afterEach(() => {
   wrapper.destroy();
 });
@@ -157,6 +162,12 @@ describe("ClientProjects.vue", () => {
       expect(projectTable().exists()).toBe(true);
       expect(projectTableRows().length).toBe(1);
       expect(firstRowProjectName().text()).toBe("World Community Grid");
+    });
+
+    it("shows the resource share as a percentage", () => {
+      createFullWrapper(testPropsWithProjects);
+
+      expect(firstRowResourceShare().text()).toBe("100%");
     });
   });
 
