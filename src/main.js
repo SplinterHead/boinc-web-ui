@@ -8,6 +8,8 @@ import {
   faArrowRotateLeft,
   faPause,
   faPlay,
+  faRotate,
+  faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faApple,
@@ -18,7 +20,16 @@ import {
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 
-library.add([faArrowRotateLeft, faPause, faPlay, faApple, faLinux, faWindows]);
+library.add([
+  faApple,
+  faArrowRotateLeft,
+  faLinux,
+  faPause,
+  faPlay,
+  faRotate,
+  faTrashCan,
+  faWindows,
+]);
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 Vue.use(BootstrapVue);

@@ -7,6 +7,8 @@
       v-else
       :fields="fields"
       :items="activeClientState.projects"
+      sort-by="project_name"
+      :sort-desc="true"
       small
       sort-icon-left
       label-sort-asc=""
@@ -38,6 +40,18 @@
           @click="resetProject(data.item.master_url)"
         />
         <b-tooltip target="project-reset" triggers="hover"> Reset </b-tooltip>
+        <font-awesome-icon
+          id="project-update"
+          icon="fa-solid fa-rotate"
+          @click="updateProject(data.item.master_url)"
+        />
+        <b-tooltip target="project-update" triggers="hover"> Update </b-tooltip>
+        <font-awesome-icon
+          id="project-detach"
+          icon="fa-solid fa-trash-can"
+          @click="detachProject(data.item.master_url)"
+        />
+        <b-tooltip target="project-detach" triggers="hover"> Detach </b-tooltip>
       </template>
     </b-table>
   </b-card>
@@ -61,12 +75,14 @@ export default {
   data() {
     return {
       disabledIcons: {
+        bin: false,
         play: false,
         pause: false,
         reset: false,
+        rotate: false,
       },
       fields: [
-        { key: "project_name", sortable: true },
+        "project_name",
         { key: "operations", label: "", class: "project-controls" },
       ],
     };
@@ -82,6 +98,11 @@ export default {
           console.log(msg);
         });
     },
+    detachProject(projectUrl) {
+      this.disabledIcons.bin = true;
+      this.callProjectEndpoint("projects/detach", projectUrl);
+      this.disabledIcons.bin = false;
+    },
     resetProject(projectUrl) {
       this.disabledIcons.reset = true;
       this.callProjectEndpoint("projects/reset", projectUrl);
@@ -96,6 +117,11 @@ export default {
       this.disabledIcons.pause = true;
       this.callProjectEndpoint("projects/suspend", projectUrl);
       this.disabledIcons.pause = false;
+    },
+    updateProject(projectUrl) {
+      this.disabledIcons.rotate = true;
+      this.callProjectEndpoint("projects/update", projectUrl);
+      this.disabledIcons.rotate = false;
     },
   },
 };

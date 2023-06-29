@@ -9,13 +9,15 @@ import {
   faArrowRotateLeft,
   faPause,
   faPlay,
+  faRotate,
+  faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 
 // create an extended `Vue` constructor
 const localVue = createLocalVue();
 
 // install plugins as normal
-library.add([faArrowRotateLeft, faPause, faPlay]);
+library.add([faArrowRotateLeft, faPause, faPlay, faRotate, faTrashCan]);
 localVue.component("font-awesome-icon", FontAwesomeIcon);
 localVue.use(BootstrapVue);
 
@@ -160,11 +162,20 @@ describe("ClientProjects.vue", () => {
 
   describe("project controls", () => {
     describe("are rendered correctly", () => {
-      it("displays a pause button when the project is active", () => {
+      it("displays the default set of icons when the project is active", () => {
         createFullWrapper(testPropsWithProjects);
 
         expect(firstRowProjectControls().at(0).attributes("class")).toContain(
           "fa-pause"
+        );
+        expect(firstRowProjectControls().at(1).attributes("class")).toContain(
+          "fa-arrow-rotate-left"
+        );
+        expect(firstRowProjectControls().at(2).attributes("class")).toContain(
+          "fa-rotate"
+        );
+        expect(firstRowProjectControls().at(3).attributes("class")).toContain(
+          "fa-trash-can"
         );
       });
 
@@ -173,14 +184,6 @@ describe("ClientProjects.vue", () => {
 
         expect(firstRowProjectControls().at(0).attributes("class")).toContain(
           "fa-play"
-        );
-      });
-
-      it("displays a reset button for the project", () => {
-        createFullWrapper(testPropsWithProjects);
-
-        expect(firstRowProjectControls().at(1).attributes("class")).toContain(
-          "fa-arrow-rotate-left"
         );
       });
     });
@@ -219,6 +222,32 @@ describe("ClientProjects.vue", () => {
 
         expect(mockAxios.post).toHaveBeenCalledWith(
           expect.stringMatching(/projects\/reset\?client=123/),
+          {
+            url: "http://www.worldcommunitygrid.org/",
+          }
+        );
+      });
+
+      it("calls the update API endpoint when the update button is clicked", () => {
+        createFullWrapper(testPropsWithProjects);
+
+        firstRowProjectControls().at(2).trigger("click");
+
+        expect(mockAxios.post).toHaveBeenCalledWith(
+          expect.stringMatching(/projects\/update\?client=123/),
+          {
+            url: "http://www.worldcommunitygrid.org/",
+          }
+        );
+      });
+
+      it("calls the detach API endpoint when the remove button is clicked", () => {
+        createFullWrapper(testPropsWithProjects);
+
+        firstRowProjectControls().at(3).trigger("click");
+
+        expect(mockAxios.post).toHaveBeenCalledWith(
+          expect.stringMatching(/projects\/detach\?client=123/),
           {
             url: "http://www.worldcommunitygrid.org/",
           }
