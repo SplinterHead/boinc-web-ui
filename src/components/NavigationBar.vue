@@ -26,6 +26,13 @@
     >
       Project List
     </b-button>
+    <b-button
+      id="notice-list-nav"
+      class="w-75"
+      @click="setActivePane('noticelist')"
+    >
+      Notices
+    </b-button>
   </b-sidebar>
 </template>
 

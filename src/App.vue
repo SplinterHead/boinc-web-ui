@@ -18,6 +18,10 @@
         :activeClient="activeClient"
         :activeClientPlatform="activeClientState.platform_name"
       />
+      <NoticeList
+        v-if="activeClient.name && activePane == 'noticelist'"
+        :activeClient="activeClient"
+      />
     </div>
   </div>
 </template>
@@ -25,15 +29,17 @@
 <script>
 import axios from "axios";
 
-import NavigationBar from "./components/NavigationBar.vue";
 import ClientInfo from "./components/ClientInfo.vue";
+import NoticeList from "./components/NoticeList.vue";
+import NavigationBar from "./components/NavigationBar.vue";
 import ProjectList from "./components/ProjectList.vue";
 
 export default {
   name: "App",
   components: {
-    NavigationBar,
     ClientInfo,
+    NoticeList,
+    NavigationBar,
     ProjectList,
   },
   data() {

@@ -15,6 +15,7 @@ let wrapper;
 const sidebar = () => wrapper.findComponent(BSidebar);
 const newClientButton = () => wrapper.get("#new-client-btn");
 const projectListButton = () => wrapper.get("#project-list-btn");
+const noticeListButton = () => wrapper.get("#notice-list-nav");
 
 function createWrapper(propsData) {
   wrapper = shallowMount(NavigationBar, {
@@ -51,15 +52,15 @@ describe("NavigationBar.vue", () => {
       expect(newClientButton().text()).toBe("Add New Client...");
     });
 
-    it("has a menu entry for seeing the project list", () => {
+    it("has all menu entries", () => {
       createWrapper(emptyProps);
 
       expect(projectListButton().text()).toBe("Project List");
+      expect(noticeListButton().text()).toBe("Notices");
     });
   });
 
   describe("collects data on creation", () => {
-    // const testProjects = { status: 200, data: [] };
     it("requests a list of currently configured clients", () => {
       createWrapper({});
       expect(mockAxios.get).toBeCalledTimes(1);
