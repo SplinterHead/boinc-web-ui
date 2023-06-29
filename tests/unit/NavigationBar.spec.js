@@ -13,8 +13,8 @@ localVue.use(BootstrapVue);
 let wrapper;
 
 const sidebar = () => wrapper.findComponent(BSidebar);
-const newClientButton = () => wrapper.get("#new-client-btn");
-const projectListButton = () => wrapper.get("#project-list-btn");
+const newClientButton = () => wrapper.get("#new-client-nav");
+const projectListButton = () => wrapper.get("#project-list-nav");
 const noticeListButton = () => wrapper.get("#notice-list-nav");
 
 function createWrapper(propsData) {

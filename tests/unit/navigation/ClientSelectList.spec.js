@@ -14,7 +14,7 @@ let wrapper;
 const clientDropDown = () => wrapper.find("#client-dropdown");
 const clientDropDownItems = () =>
   clientDropDown().findAllComponents(BDropdownItem);
-const newClientBtn = () => wrapper.find("#new-client-btn");
+const newClientBtn = () => wrapper.find("#new-client-nav");
 
 function createWrapper(propsData) {
   wrapper = shallowMount(ClientSelectList, {

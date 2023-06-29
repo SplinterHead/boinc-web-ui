@@ -27,7 +27,7 @@
     </b-dropdown>
     <b-button
       v-else
-      id="new-client-btn"
+      id="new-client-nav"
       class="w-75"
       v-b-modal.new-client-modal
     >

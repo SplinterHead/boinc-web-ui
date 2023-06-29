@@ -20,7 +20,7 @@
       @set-active-pane="setActivePane"
     />
     <b-button
-      id="project-list-btn"
+      id="project-list-nav"
       class="w-75"
       @click="setActivePane('projectlist')"
     >
