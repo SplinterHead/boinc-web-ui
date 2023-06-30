@@ -9,6 +9,12 @@
       id="notice-table"
       :fields="fields"
       :items="noticesArr"
+      sort-by="create_time"
+      :sort-desc="false"
+      sort-icon-left
+      label-sort-asc=""
+      label-sort-desc=""
+      label-sort-clear=""
     >
       <template v-slot:cell(create_time)="data">
         <div class="text-nowrap">{{ convertEpoch(data.value * 1000) }}</div>
@@ -34,7 +40,7 @@ export default {
   data() {
     return {
       fields: [
-        { key: "create_time", label: "Time" },
+        { key: "create_time", label: "Time", sortable: true },
         { key: "project_name", label: "Project" },
         { key: "description", label: "Notice" },
       ],
