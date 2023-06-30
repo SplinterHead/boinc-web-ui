@@ -22,6 +22,10 @@
         v-if="activeClient.name && activePane == 'noticelist'"
         :activeClient="activeClient"
       />
+      <MessageList
+        v-if="activeClient.name && activePane == 'messagelist'"
+        :activeClient="activeClient"
+      />
     </div>
   </div>
 </template>
@@ -30,6 +34,7 @@
 import axios from "axios";
 
 import ClientInfo from "./components/ClientInfo.vue";
+import MessageList from "./components/MessageList.vue";
 import NoticeList from "./components/NoticeList.vue";
 import NavigationBar from "./components/NavigationBar.vue";
 import ProjectList from "./components/ProjectList.vue";
@@ -38,6 +43,7 @@ export default {
   name: "App",
   components: {
     ClientInfo,
+    MessageList,
     NoticeList,
     NavigationBar,
     ProjectList,

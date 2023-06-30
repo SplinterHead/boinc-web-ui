@@ -16,6 +16,7 @@ const sidebar = () => wrapper.findComponent(BSidebar);
 const newClientButton = () => wrapper.get("#new-client-nav");
 const projectListButton = () => wrapper.get("#project-list-nav");
 const noticeListButton = () => wrapper.get("#notice-list-nav");
+const messageListButton = () => wrapper.get("#message-list-nav");
 
 function createWrapper(propsData) {
   wrapper = shallowMount(NavigationBar, {
@@ -57,6 +58,7 @@ describe("NavigationBar.vue", () => {
 
       expect(projectListButton().text()).toBe("Project List");
       expect(noticeListButton().text()).toBe("Notices");
+      expect(messageListButton().text()).toBe("Messages");
     });
   });
 

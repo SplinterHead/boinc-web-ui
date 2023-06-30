@@ -33,6 +33,13 @@
     >
       Notices
     </b-button>
+    <b-button
+      id="message-list-nav"
+      class="w-75"
+      @click="setActivePane('messagelist')"
+    >
+      Messages
+    </b-button>
   </b-sidebar>
 </template>
 
