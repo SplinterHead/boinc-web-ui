@@ -1,12 +1,6 @@
 <template>
   <div id="app">
-    <NavigationBar
-      :activeClient="activeClient"
-      :clients="clients"
-      @add-client="addClient"
-      @select-client="selectActiveClient"
-      @select-pane="selectActivePane"
-    />
+    <NavigationBar @select-pane="selectActivePane" />
     <div id="active-pane">
       <ClientInfo
         v-if="activeClient.name && activePane == 'clientinfo'"
@@ -18,19 +12,14 @@
         :activeClient="activeClient"
         :activeClientPlatform="activeClientState.platform_name"
       />
-      <NoticeList
-        v-if="activeClient.name && activePane == 'noticelist'"
-        :activeClient="activeClient"
-      />
-      <MessageList
-        v-if="activeClient.name && activePane == 'messagelist'"
-        :activeClient="activeClient"
-      />
+      <NoticeList v-if="activeClient.name && activePane == 'noticelist'" />
+      <MessageList v-if="activeClient.name && activePane == 'messagelist'" />
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import axios from "axios";
 
 import ClientInfo from "./components/ClientInfo.vue";
@@ -50,10 +39,8 @@ export default {
   },
   data() {
     return {
-      activeClient: {},
       activeClientState: {},
       activePane: "",
-      clients: [],
       timer: "",
     };
   },
@@ -64,25 +51,26 @@ export default {
     clearInterval(this.timer);
   },
   methods: {
-    addClient(e) {
-      this.clients.push(JSON.parse(JSON.stringify(e)));
-    },
     getActiveClientState() {
-      if (this.activeClient.id) {
+      if (this.activeClientId) {
         axios
           .get(
-            `${process.env.VUE_APP_API_URL}/client/state?client=${this.activeClient.id}`
+            `${process.env.VUE_APP_API_URL}/client/state?client=${this.activeClientId}`
           )
-          .then((response) => (this.activeClientState = response.data));
+          .then((response) => {
+            this.activeClientState = response.data;
+          });
       }
     },
-    selectActiveClient(client) {
-      this.activeClient = client;
+    selectActiveClient() {
       this.getActiveClientState();
     },
     selectActivePane(pane) {
       this.activePane = pane;
     },
+  },
+  computed: {
+    ...mapGetters("clients", ["activeClient", "activeClientId"]),
   },
 };
 </script>

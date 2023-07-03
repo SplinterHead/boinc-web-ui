@@ -3,7 +3,7 @@
     <b-dropdown
       split
       class="w-75"
-      v-if="clients.length > 0"
+      v-show="allClients.length > 0"
       id="client-dropdown"
       :text="
         !activeClient.name
@@ -14,9 +14,9 @@
       @click="setActivePane()"
     >
       <b-dropdown-item
-        v-for="client in clients"
+        v-for="client in allClients"
         :key="client.id"
-        @click="setActiveClient(client)"
+        @click="setActiveClient(client.id)"
       >
         {{ client.name | truncate(21, "...") }}
       </b-dropdown-item>
@@ -26,18 +26,19 @@
       </b-dropdown-item>
     </b-dropdown>
     <b-button
-      v-else
+      v-show="allClients.length == 0"
       id="new-client-nav"
       class="w-75"
       v-b-modal.new-client-modal
     >
       Add New Client...
     </b-button>
-    <NewClientModal @add-client="addClient" />
+    <NewClientModal @update-clients="updateClients()" />
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from "vuex";
 import NewClientModal from "@/components/navigation/NewClientModal";
 
 export default {
@@ -45,20 +46,17 @@ export default {
   components: {
     NewClientModal,
   },
-  props: {
-    activeClient: {},
-    clients: [],
-  },
   methods: {
-    addClient(e) {
-      this.$emit("add-client", e);
-    },
-    setActiveClient(client) {
-      this.$emit("select-client", client);
-    },
     setActivePane() {
       this.$emit("set-active-pane", "clientinfo");
     },
+    ...mapActions("clients", ["setActiveClient", "updateClients"]),
+  },
+  computed: {
+    ...mapGetters("clients", ["activeClient", "allClients"]),
+  },
+  mounted() {
+    this.updateClients();
   },
   filters: {
     truncate: function (text, length, suffix) {

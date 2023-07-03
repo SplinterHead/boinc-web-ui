@@ -1,13 +1,16 @@
 import { createLocalVue, mount, shallowMount } from "@vue/test-utils";
+import Vuex from "vuex";
 import { BootstrapVue } from "bootstrap-vue";
 import mockAxios from "jest-mock-axios";
 
 import MessageList from "@/components/MessageList.vue";
 
-const localVue = createLocalVue();
-localVue.use(BootstrapVue);
+let wrapper;
+let state;
+let getters;
+let store;
 
-const testClient = { name: "test client", id: "123" };
+const localVue = createLocalVue();
 const noMessages = { messages: {} };
 const singleMessage = {
   messages: {
@@ -20,7 +23,24 @@ const singleMessage = {
   },
 };
 
-let wrapper;
+localVue.use(BootstrapVue);
+localVue.use(Vuex);
+
+state = {
+  activeClientId: "123",
+};
+getters = {
+  activeClientId: () => state.activeClientId,
+};
+store = new Vuex.Store({
+  modules: {
+    clients: {
+      state,
+      getters,
+      namespaced: true,
+    },
+  },
+});
 
 const titleText = () => wrapper.get("h1").text();
 const messageDiv = () => wrapper.get("#message-div");
@@ -31,15 +51,15 @@ const firstRowTime = () => messageTableRows().at(0).findAll("td").at(0);
 
 function createWrapper() {
   wrapper = shallowMount(MessageList, {
+    store,
     localVue,
-    propsData: { activeClient: testClient },
   });
 }
 
 function createFullWrapper() {
   wrapper = mount(MessageList, {
+    store,
     localVue,
-    propsData: { activeClient: testClient },
   });
 }
 

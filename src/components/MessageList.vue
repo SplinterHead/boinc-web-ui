@@ -28,16 +28,11 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import axios from "axios";
 
 export default {
   name: "MessageList",
-  props: {
-    activeClient: {
-      type: Object,
-      required: true,
-    },
-  },
   data() {
     return {
       fields: [
@@ -61,11 +56,12 @@ export default {
       });
       return messageArr;
     },
+    ...mapGetters("clients", ["activeClientId"]),
   },
   mounted() {
     axios
       .get(
-        `${process.env.VUE_APP_API_URL}/messages/all?client=${this.activeClient.id}`
+        `${process.env.VUE_APP_API_URL}/messages/all?client=${this.activeClientId}`
       )
       .then((response) => {
         this.messages = response.data.messages;

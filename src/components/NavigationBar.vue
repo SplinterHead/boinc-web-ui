@@ -6,19 +6,13 @@
     bg-variant="dark"
     text-variant="light"
     shadow
-    :visible="forceDisplay"
-    :no-close-on-backdrop="forceDisplay"
-    :no-close-on-esc="forceDisplay"
-    :no-close-on-route-change="forceDisplay"
-    :no-header-close="forceDisplay"
+    :visible="true"
+    :no-close-on-backdrop="true"
+    :no-close-on-esc="true"
+    :no-close-on-route-change="true"
+    :no-header-close="true"
   >
-    <ClientSelectList
-      :active-client="activeClient"
-      :clients="clients"
-      @add-client="addClient"
-      @select-client="setActiveClient"
-      @set-active-pane="setActivePane"
-    />
+    <ClientSelectList @set-active-pane="setActivePane" />
     <b-button
       id="project-list-nav"
       class="w-75"
@@ -44,7 +38,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import ClientSelectList from "./navigation/ClientSelectList.vue";
 
 export default {
@@ -52,34 +45,10 @@ export default {
   components: {
     ClientSelectList,
   },
-  props: {
-    activeClient: {},
-    clients: [],
-  },
-  data() {
-    return {
-      forceDisplay: true,
-    };
-  },
   methods: {
-    addClient(e) {
-      this.$emit("add-client", e);
-    },
-    setActiveClient(client) {
-      this.$emit("select-client", client);
-    },
     setActivePane(pane) {
       this.$emit("select-pane", pane);
     },
-  },
-  mounted() {
-    axios
-      .get(`${process.env.VUE_APP_API_URL}/clients/getall`)
-      .then((response) => {
-        response.data.forEach((client) => {
-          this.$emit("add-client", client);
-        });
-      });
   },
 };
 </script>

@@ -1,14 +1,16 @@
 import { createLocalVue, mount, shallowMount } from "@vue/test-utils";
+import Vuex from "vuex";
 import { BootstrapVue } from "bootstrap-vue";
 import mockAxios from "jest-mock-axios";
 
 import NoticeList from "@/components/NoticeList.vue";
 
+let wrapper;
+let state;
+let getters;
+let store;
+
 const localVue = createLocalVue();
-localVue.use(BootstrapVue);
-
-const testClient = { name: "test client", id: "123" };
-
 const noNotices = { notices: {} };
 const singleNotice = {
   notices: {
@@ -26,7 +28,24 @@ const singleNotice = {
   },
 };
 
-let wrapper;
+localVue.use(BootstrapVue);
+localVue.use(Vuex);
+
+state = {
+  activeClientId: "123",
+};
+getters = {
+  activeClientId: () => state.activeClientId,
+};
+store = new Vuex.Store({
+  modules: {
+    clients: {
+      state,
+      getters,
+      namespaced: true,
+    },
+  },
+});
 
 const titleText = () => wrapper.get("h1").text();
 const messageDiv = () => wrapper.get("#message-div");
@@ -38,15 +57,15 @@ const firstRowTime = () => noticeTableRows().at(0).findAll("td").at(0);
 
 function createWrapper() {
   wrapper = shallowMount(NoticeList, {
+    store,
     localVue,
-    propsData: { activeClient: testClient },
   });
 }
 
 function createFullWrapper() {
   wrapper = mount(NoticeList, {
+    store,
     localVue,
-    propsData: { activeClient: testClient },
   });
 }
 

@@ -27,16 +27,11 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import axios from "axios";
 
 export default {
   name: "NoticeList",
-  props: {
-    activeClient: {
-      type: Object,
-      required: true,
-    },
-  },
   data() {
     return {
       fields: [
@@ -60,11 +55,12 @@ export default {
       });
       return noticeArr;
     },
+    ...mapGetters("clients", ["activeClientId"]),
   },
   mounted() {
     axios
       .get(
-        `${process.env.VUE_APP_API_URL}/notices/all?client=${this.activeClient.id}`
+        `${process.env.VUE_APP_API_URL}/notices/all?client=${this.activeClientId}`
       )
       .then((response) => {
         this.notices = response.data.notices;

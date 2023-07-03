@@ -3,9 +3,9 @@
     id="new-client-modal"
     title="New BOINC Client"
     :busy="loading"
-    @ok="emitDataAndReset"
-    @cancel="resetForm"
-    @close="resetForm"
+    @ok="submitAndReset()"
+    @cancel="resetForm()"
+    @close="resetForm()"
   >
     <b-form>
       <b-form-group
@@ -75,17 +75,13 @@ export default {
     };
   },
   methods: {
-    async emitDataAndReset() {
+    async submitAndReset() {
       this.loading = true;
       await axios
         .post(`${process.env.VUE_APP_API_URL}/clients/add`, this.client)
-        .then((response) => {
-          this.stateClient = {
-            hostname: this.client.hostname,
-            id: response.data.client_id,
-            name: this.client.name,
-          };
-          this.$emit("add-client", this.stateClient);
+        .then((resp) => {
+          console.log(`Stored client with id ${resp.data.client_id}`);
+          this.$emit("update-clients");
           this.resetForm();
         })
         .catch((error) => {

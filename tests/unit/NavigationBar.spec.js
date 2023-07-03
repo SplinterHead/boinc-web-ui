@@ -1,74 +1,71 @@
-import { createLocalVue, mount, shallowMount } from "@vue/test-utils";
+import { createLocalVue, shallowMount } from "@vue/test-utils";
 import { BSidebar, BootstrapVue } from "bootstrap-vue";
-import mockAxios from "jest-mock-axios";
+import Vuex from "vuex";
 
 import NavigationBar from "@/components/NavigationBar.vue";
 
-// create an extended `Vue` constructor
 const localVue = createLocalVue();
 
-// install plugins as normal
 localVue.use(BootstrapVue);
+localVue.use(Vuex);
 
 let wrapper;
+let state;
+let getters;
+let actions;
+let store;
 
 const sidebar = () => wrapper.findComponent(BSidebar);
-const newClientButton = () => wrapper.get("#new-client-nav");
 const projectListButton = () => wrapper.get("#project-list-nav");
 const noticeListButton = () => wrapper.get("#notice-list-nav");
 const messageListButton = () => wrapper.get("#message-list-nav");
 
-function createWrapper(propsData) {
+state = {
+  activeClientId: "",
+  allClients: [],
+};
+getters = {
+  activeClient: () => {},
+  allClients: () => [],
+};
+actions = {
+  updateClients: jest.fn(),
+};
+store = new Vuex.Store({
+  modules: {
+    clients: {
+      state,
+      getters,
+      actions,
+      namespaced: true,
+    },
+  },
+});
+
+function createWrapper() {
   wrapper = shallowMount(NavigationBar, {
     localVue,
-    propsData: propsData,
-  });
-}
-
-function createFullWrapper(propsData) {
-  wrapper = mount(NavigationBar, {
-    localVue,
-    propsData: propsData,
   });
 }
 
 afterEach(() => {
-  mockAxios.reset();
   wrapper.destroy();
 });
 
 describe("NavigationBar.vue", () => {
-  const emptyProps = { activeClient: {}, clients: [] };
-
   describe("renders with the expected elements", () => {
     it("has a title of 'BOINC Client'", () => {
-      createWrapper(emptyProps);
+      createWrapper();
 
       expect(sidebar().attributes("title")).toBe("BOINC Client");
     });
 
-    it("has a button for adding a new client", () => {
-      createFullWrapper(emptyProps);
-
-      expect(newClientButton().text()).toBe("Add New Client...");
-    });
-
     it("has all menu entries", () => {
-      createWrapper(emptyProps);
+      createWrapper();
 
       expect(projectListButton().text()).toBe("Project List");
       expect(noticeListButton().text()).toBe("Notices");
       expect(messageListButton().text()).toBe("Messages");
-    });
-  });
-
-  describe("collects data on creation", () => {
-    it("requests a list of currently configured clients", () => {
-      createWrapper({});
-      expect(mockAxios.get).toBeCalledTimes(1);
-      expect(mockAxios.get).toHaveBeenCalledWith(
-        expect.stringMatching(/.*\/getall/)
-      );
     });
   });
 });
