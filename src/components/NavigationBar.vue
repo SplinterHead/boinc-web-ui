@@ -1,3 +1,6 @@
+<script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+<script src="https://unpkg.com/vue-router@3/dist/vue-router.js"></script>
+
 <template>
   <b-sidebar
     class="text-center"
@@ -12,32 +15,40 @@
     :no-close-on-route-change="true"
     :no-header-close="true"
   >
-    <ClientSelectList @set-active-pane="setActivePane" />
-    <b-button
+    <ClientSelectList />
+
+    <br />
+    <router-link
+      to="/projects"
       id="project-list-nav"
-      class="w-75"
-      @click="setActivePane('projectlist')"
+      :class="linkDisabled ? 'disabled' : 'active'"
+      :event="linkDisabled ? 'none' : 'click'"
     >
       Project List
-    </b-button>
-    <b-button
+    </router-link>
+    <br />
+    <router-link
+      to="/notices"
       id="notice-list-nav"
-      class="w-75"
-      @click="setActivePane('noticelist')"
+      :class="linkDisabled ? 'disabled' : 'active'"
+      :event="linkDisabled ? 'none' : 'click'"
     >
       Notices
-    </b-button>
-    <b-button
+    </router-link>
+    <br />
+    <router-link
+      to="/messages"
       id="message-list-nav"
-      class="w-75"
-      @click="setActivePane('messagelist')"
+      :class="linkDisabled ? 'disabled' : 'active'"
+      :event="linkDisabled ? 'none' : 'click'"
     >
       Messages
-    </b-button>
+    </router-link>
   </b-sidebar>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import ClientSelectList from "./navigation/ClientSelectList.vue";
 
 export default {
@@ -45,10 +56,19 @@ export default {
   components: {
     ClientSelectList,
   },
-  methods: {
-    setActivePane(pane) {
-      this.$emit("select-pane", pane);
+  computed: {
+    linkDisabled() {
+      return this.activeClientId == "";
     },
   },
+  ...mapGetters("clients", ["activeClientId"]),
 };
 </script>
+
+<style scoped>
+.disabled {
+  text-decoration: none;
+  color: grey;
+  cursor: default;
+}
+</style>

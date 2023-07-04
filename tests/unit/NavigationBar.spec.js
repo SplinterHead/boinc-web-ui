@@ -1,42 +1,38 @@
 import { createLocalVue, shallowMount } from "@vue/test-utils";
 import { BSidebar, BootstrapVue } from "bootstrap-vue";
 import Vuex from "vuex";
+import VueRouter from "vue-router";
 
 import NavigationBar from "@/components/NavigationBar.vue";
 
 const localVue = createLocalVue();
+const localRouter = new VueRouter();
 
 localVue.use(BootstrapVue);
 localVue.use(Vuex);
+localVue.use(VueRouter);
 
 let wrapper;
 let state;
 let getters;
-let actions;
 let store;
 
 const sidebar = () => wrapper.findComponent(BSidebar);
-const projectListButton = () => wrapper.get("#project-list-nav");
-const noticeListButton = () => wrapper.get("#notice-list-nav");
-const messageListButton = () => wrapper.get("#message-list-nav");
+const projectListLink = () => wrapper.get("#project-list-nav");
+const noticeListLink = () => wrapper.get("#notice-list-nav");
+const messageListLink = () => wrapper.get("#message-list-nav");
 
 state = {
   activeClientId: "",
-  allClients: [],
 };
 getters = {
-  activeClient: () => {},
-  allClients: () => [],
-};
-actions = {
-  updateClients: jest.fn(),
+  activeClientId: () => state.activeClientId,
 };
 store = new Vuex.Store({
   modules: {
     clients: {
       state,
       getters,
-      actions,
       namespaced: true,
     },
   },
@@ -44,6 +40,8 @@ store = new Vuex.Store({
 
 function createWrapper() {
   wrapper = shallowMount(NavigationBar, {
+    store,
+    localRouter,
     localVue,
   });
 }
@@ -63,9 +61,9 @@ describe("NavigationBar.vue", () => {
     it("has all menu entries", () => {
       createWrapper();
 
-      expect(projectListButton().text()).toBe("Project List");
-      expect(noticeListButton().text()).toBe("Notices");
-      expect(messageListButton().text()).toBe("Messages");
+      expect(projectListLink().text()).toBe("Project List");
+      expect(noticeListLink().text()).toBe("Notices");
+      expect(messageListLink().text()).toBe("Messages");
     });
   });
 });
