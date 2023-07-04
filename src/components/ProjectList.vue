@@ -1,9 +1,9 @@
 <template>
   <div>
     <h1>Projects</h1>
-    <div v-if="activeClient.name">
-      <div v-if="allProjects.length == 0">No Projects found</div>
-      <div v-else id="projects">
+    <div v-show="activeClientId">
+      <div v-show="allProjects.length == 0">No Projects found</div>
+      <div v-show="allProjects.length > 0" id="projects">
         <b-navbar id="filter-bar" toggleable="lg" variant="light">
           <b-navbar-nav>
             <b-nav-text id="category-label">Categories:</b-nav-text>
@@ -75,18 +75,19 @@
           <ProjectCard
             v-for="project in filteredProjects"
             :key="project.id"
-            :clientId="activeClient.id"
+            :clientId="activeClientId"
             :project="project"
             class="project-card"
           />
         </div>
       </div>
     </div>
-    <div v-else>Please choose a client</div>
+    <div v-show="!activeClientId">Please choose a client</div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import axios from "axios";
 
 import ProjectCard from "@/components/project/ProjectCard.vue";
@@ -95,16 +96,6 @@ export default {
   name: "ProjectList",
   components: {
     ProjectCard,
-  },
-  props: {
-    activeClient: {
-      type: Object,
-      requried: true,
-    },
-    activeClientPlatform: {
-      type: String,
-      required: false,
-    },
   },
   data() {
     return {
@@ -118,10 +109,10 @@ export default {
     };
   },
   mounted() {
-    if (this.activeClient.name) {
+    if (this.activeClientId) {
       axios
         .get(
-          `${process.env.VUE_APP_API_URL}/projects/all?client=${this.activeClient.id}`
+          `${process.env.VUE_APP_API_URL}/projects/all?client=${this.activeClientId}`
         )
         .then((response) => {
           this.allProjects = response.data.projects;
@@ -164,11 +155,12 @@ export default {
         projectsToRtn = projectsToRtn.filter((project) =>
           project.platforms
             .map((platform) => platform.name)
-            .includes(this.activeClientPlatform)
+            .includes(this.activeClient.platform)
         );
       }
       return projectsToRtn;
     },
+    ...mapGetters("clients", ["activeClient", "activeClientId"]),
   },
   methods: {
     setCategory(category) {

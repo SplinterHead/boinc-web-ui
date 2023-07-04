@@ -34,14 +34,18 @@ export default {
   },
   computed: {
     versionString() {
-      return (
-        "v" +
-        [
-          this.activeClientState.version.major,
-          this.activeClientState.version.minor,
-          this.activeClientState.version.patch,
-        ].join(".")
-      );
+      if (this.activeClientState.version) {
+        return (
+          "v" +
+          [
+            this.activeClientState.version.major,
+            this.activeClientState.version.minor,
+            this.activeClientState.version.patch,
+          ].join(".")
+        );
+      } else {
+        return "Unknown";
+      }
     },
   },
 };

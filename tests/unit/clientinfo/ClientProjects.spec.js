@@ -21,80 +21,71 @@ library.add([faArrowRotateLeft, faPause, faPlay, faRotate, faTrashCan]);
 localVue.component("font-awesome-icon", FontAwesomeIcon);
 localVue.use(BootstrapVue);
 
-const testPropsNoProjects = {
-  projects: [],
-};
-
-const testPropsWithProjects = {
-  projects: [
-    {
-      cpid_time: 1665410370.0,
-      cross_project_id: "037befc40287d29bb9590d8e0edd8198",
-      desired_disk_usage: 0.0,
-      disk_share: 410497975500.800049,
-      disk_usage: 1410613248.0,
-      dont_use_dcf: false,
-      duration_correction_factor: 1.0,
-      elapsed_time: 43580057.333979,
-      email_hash: "35cfa58b4e0b46de6a651ce508082d61",
-      external_cpid: "192792945b257453b6da6c7cad1c1381",
-      gui_urls: [
-        {
-          name: "Research Overview",
-          description:
-            "Learn about the projects hosted at World Community Grid",
-          url: "https://www.worldcommunitygrid.org/research/viewAllProjects.do",
-        },
-      ],
-      host_create_time: 1665650589.0,
-      host_expavg_credit: 2900.71544,
-      host_total_credit: 339691.861332,
-      host_venue: "",
-      hostid: 8667640,
-      last_rpc_time: 1677187401.862822,
-      master_fetch_failures: 0,
-      master_url_fetch_pending: false,
-      master_url: "http://www.worldcommunitygrid.org/",
-      min_rpc_time: 1677187523.062822,
-      next_rpc_time: 1677446601.862822,
-      njobs_error: 86,
-      njobs_success: 3872,
-      nrpc_failures: 0,
-      project_dir: "/var/lib/boinc/projects/www.worldcommunitygrid.org",
-      project_files_downloaded_time: 0.0,
-      project_name: "World Community Grid",
-      rec_time: 1677189666.165,
-      rec: 4267.417546,
-      resource_share: 100.0,
-      rpc_seqno: 655,
-      rsc_backoff_interval: { name: "CPU", value: 0.0 },
-      rsc_backoff_time: { name: "CPU", value: 0.0 },
-      sched_priority: -1.041667,
-      sched_rpc_pending: 0,
-      scheduler_rpc_in_progress: false,
-      send_job_log: 0,
-      send_time_stats_log: 0,
-      suspended_via_gui: false,
-      symstore: "",
-      team_name: "",
-      teamid: 0,
-      user_create_time: 1665410370.0,
-      user_expavg_credit: 2900.946548,
-      user_name: "user_name",
-      user_total_credit: 341094.533876,
-      userid: 1156486,
-    },
-  ],
-};
-
-const testPropsSuspendedProjects = {
-  projects: [
-    {
-      master_url: "http://www.worldcommunitygrid.org/",
-      suspended_via_gui: true,
-    },
-  ],
-};
+const testPropsNoProjects = [];
+const testPropsSuspendedProjects = [
+  {
+    master_url: "http://www.worldcommunitygrid.org/",
+    suspended_via_gui: true,
+  },
+];
+const testPropsWithProjects = [
+  {
+    cpid_time: 1665410370.0,
+    cross_project_id: "037befc40287d29bb9590d8e0edd8198",
+    desired_disk_usage: 0.0,
+    disk_share: 410497975500.800049,
+    disk_usage: 1410613248.0,
+    dont_use_dcf: false,
+    duration_correction_factor: 1.0,
+    elapsed_time: 43580057.333979,
+    email_hash: "35cfa58b4e0b46de6a651ce508082d61",
+    external_cpid: "192792945b257453b6da6c7cad1c1381",
+    gui_urls: [
+      {
+        name: "Research Overview",
+        description: "Learn about the projects hosted at World Community Grid",
+        url: "https://www.worldcommunitygrid.org/research/viewAllProjects.do",
+      },
+    ],
+    host_create_time: 1665650589.0,
+    host_expavg_credit: 2900.71544,
+    host_total_credit: 339691.861332,
+    host_venue: "",
+    hostid: 8667640,
+    last_rpc_time: 1677187401.862822,
+    master_fetch_failures: 0,
+    master_url_fetch_pending: false,
+    master_url: "http://www.worldcommunitygrid.org/",
+    min_rpc_time: 1677187523.062822,
+    next_rpc_time: 1677446601.862822,
+    njobs_error: 86,
+    njobs_success: 3872,
+    nrpc_failures: 0,
+    project_dir: "/var/lib/boinc/projects/www.worldcommunitygrid.org",
+    project_files_downloaded_time: 0.0,
+    project_name: "World Community Grid",
+    rec_time: 1677189666.165,
+    rec: 4267.417546,
+    resource_share: 100.0,
+    rpc_seqno: 655,
+    rsc_backoff_interval: { name: "CPU", value: 0.0 },
+    rsc_backoff_time: { name: "CPU", value: 0.0 },
+    sched_priority: -1.041667,
+    sched_rpc_pending: 0,
+    scheduler_rpc_in_progress: false,
+    send_job_log: 0,
+    send_time_stats_log: 0,
+    suspended_via_gui: false,
+    symstore: "",
+    team_name: "",
+    teamid: 0,
+    user_create_time: 1665410370.0,
+    user_expavg_credit: 2900.946548,
+    user_name: "user_name",
+    user_total_credit: 341094.533876,
+    userid: 1156486,
+  },
+];
 
 let wrapper;
 
@@ -110,11 +101,8 @@ function createWrapper(propsData) {
   wrapper = shallowMount(ClientProjects, {
     localVue,
     propsData: {
-      activeClient: {
-        name: "Test Server",
-        id: "123",
-      },
-      activeClientState: propsData,
+      activeClientId: "123",
+      projects: propsData,
     },
   });
 }
@@ -123,11 +111,8 @@ function createFullWrapper(propsData) {
   wrapper = mount(ClientProjects, {
     localVue,
     propsData: {
-      activeClient: {
-        name: "Test Server",
-        id: "123",
-      },
-      activeClientState: propsData,
+      activeClientId: "123",
+      projects: propsData,
     },
   });
 }
@@ -151,7 +136,7 @@ describe("ClientProjects.vue", () => {
     it("the 'no projects' message when client has no projects", () => {
       createWrapper(testPropsNoProjects);
 
-      expect(wrapper.text()).toBe(
+      expect(wrapper.text()).toContain(
         "This client is not attached to any projects"
       );
     });

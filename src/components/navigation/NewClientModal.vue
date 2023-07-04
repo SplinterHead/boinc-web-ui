@@ -77,6 +77,7 @@ export default {
   methods: {
     async submitAndReset() {
       this.loading = true;
+      this.client.port = parseInt(this.client.port);
       await axios
         .post(`${process.env.VUE_APP_API_URL}/clients/add`, this.client)
         .then((resp) => {

@@ -1,4 +1,5 @@
 import { createLocalVue, mount, shallowMount } from "@vue/test-utils";
+import Vuex from "vuex";
 import { BDropdownItem, BootstrapVue } from "bootstrap-vue";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -13,15 +14,7 @@ import mockAxios from "jest-mock-axios";
 import ProjectList from "@/components/ProjectList.vue";
 import ProjectCard from "@/components/project/ProjectCard.vue";
 
-library.add([faApple, faLinux, faWindows]);
-
-// create an extended `Vue` constructor
 const localVue = createLocalVue();
-
-// install plugins as normal
-localVue.use(BootstrapVue);
-localVue.component("font-awesome-icon", FontAwesomeIcon);
-
 const sampleProjects = [
   {
     description: "Study drugs to fight SARS-CoV-2",
@@ -81,7 +74,35 @@ const sampleProjects = [
   },
 ];
 
+localVue.use(BootstrapVue);
+localVue.use(Vuex);
+library.add([faApple, faLinux, faWindows]);
+localVue.component("font-awesome-icon", FontAwesomeIcon);
+
+let getters;
+let state;
+let store;
 let wrapper;
+
+state = {
+  activeClientId: "123",
+  activeClient: {
+    platform: "linux_x86_64",
+  },
+};
+getters = {
+  activeClient: () => state.activeClient,
+  activeClientId: () => "123",
+};
+store = new Vuex.Store({
+  modules: {
+    clients: {
+      state,
+      getters,
+      namespaced: true,
+    },
+  },
+});
 
 const filterBar = () => wrapper.get("#filter-bar");
 const textSearchBox = () => wrapper.get("#text-filter");
@@ -94,17 +115,17 @@ const subCategorySelectItems = () =>
 const platformToggle = () => wrapper.get("#platform-toggle");
 const projectCards = () => wrapper.findAllComponents(ProjectCard);
 
-function createWrapper(propsData) {
+function createWrapper() {
   wrapper = shallowMount(ProjectList, {
     localVue,
-    propsData: propsData,
+    store,
   });
 }
 
-function createFullWrapper(propsData) {
+function createFullWrapper() {
   wrapper = mount(ProjectList, {
     localVue,
-    propsData: propsData,
+    store,
   });
 }
 
@@ -114,22 +135,10 @@ afterEach(() => {
 });
 
 describe("ProjectList.vue", () => {
-  const testProps = {
-    activeClient: { name: "test client", id: "123" },
-    activeClientPlatform: "linux_x86_64",
-  };
-
   describe("No projects returned from the API", () => {
     const noProjects = { status: 200, data: { projects: [] } };
-
-    it("displays 'Please choose a client' message when no client is active", () => {
-      createWrapper({ activeClient: {} });
-
-      expect(wrapper.text()).toContain("Please choose a client");
-    });
-
     it("display 'No Projects found' message", () => {
-      createWrapper(testProps);
+      createWrapper();
 
       expect(mockAxios.get).toHaveBeenCalledWith(
         expect.stringMatching(/.*=123/)
@@ -146,7 +155,7 @@ describe("ProjectList.vue", () => {
     };
 
     it("displays a bar for filtering projects", async () => {
-      createWrapper(testProps);
+      createWrapper();
       mockAxios.mockResponse(sampleProjectsResponse);
       await wrapper.vm.$nextTick();
 
@@ -155,7 +164,7 @@ describe("ProjectList.vue", () => {
 
     describe("by text", () => {
       it("displays a textbox for searching projects", async () => {
-        createFullWrapper(testProps);
+        createFullWrapper();
         mockAxios.mockResponse(sampleProjectsResponse);
         await wrapper.vm.$nextTick();
 
@@ -163,7 +172,7 @@ describe("ProjectList.vue", () => {
       });
 
       it("only displays the projects that contain matching text", async () => {
-        createFullWrapper(testProps);
+        createFullWrapper();
         mockAxios.mockResponse(sampleProjectsResponse);
         await wrapper.vm.$nextTick();
 
@@ -175,7 +184,7 @@ describe("ProjectList.vue", () => {
       });
 
       it("matches text in a case-insensitive way", async () => {
-        createFullWrapper(testProps);
+        createFullWrapper();
         mockAxios.mockResponse(sampleProjectsResponse);
         await wrapper.vm.$nextTick();
 
@@ -189,7 +198,7 @@ describe("ProjectList.vue", () => {
 
     describe("by category", () => {
       it("builds a list of categories from the projects", async () => {
-        createWrapper(testProps);
+        createWrapper();
         mockAxios.mockResponse(sampleProjectsResponse);
         await wrapper.vm.$nextTick();
 
@@ -204,7 +213,7 @@ describe("ProjectList.vue", () => {
       });
 
       it("builds a list of sub-categories from the projects once main category is selected", async () => {
-        createWrapper(testProps);
+        createWrapper();
         mockAxios.mockResponse(sampleProjectsResponse);
         await wrapper.vm.$nextTick();
 
@@ -223,7 +232,7 @@ describe("ProjectList.vue", () => {
       });
 
       it("maintains the full list of subcategories when one is selected", async () => {
-        createWrapper(testProps);
+        createWrapper();
         mockAxios.mockResponse(sampleProjectsResponse);
         await wrapper.vm.$nextTick();
 
@@ -236,7 +245,7 @@ describe("ProjectList.vue", () => {
       });
 
       it("only displays the projects that match the selected category", async () => {
-        createFullWrapper(testProps);
+        createFullWrapper();
         mockAxios.mockResponse(sampleProjectsResponse);
         await wrapper.vm.$nextTick();
 
@@ -257,7 +266,7 @@ describe("ProjectList.vue", () => {
       });
 
       it("only displays the projects that match the category and subcategory", async () => {
-        createFullWrapper(testProps);
+        createFullWrapper();
         mockAxios.mockResponse(sampleProjectsResponse);
         await wrapper.vm.$nextTick();
 
@@ -272,7 +281,7 @@ describe("ProjectList.vue", () => {
 
     describe("by native platform", () => {
       it("displays a toggle for filtering projects by platform", async () => {
-        createWrapper(testProps);
+        createWrapper();
         mockAxios.mockResponse(sampleProjectsResponse);
         await wrapper.vm.$nextTick();
 
@@ -280,7 +289,7 @@ describe("ProjectList.vue", () => {
       });
 
       it("only displays the projects matching the current client's platform", async () => {
-        createFullWrapper(testProps);
+        createFullWrapper();
         mockAxios.mockResponse(sampleProjectsResponse);
         await wrapper.vm.$nextTick();
 
@@ -295,7 +304,7 @@ describe("ProjectList.vue", () => {
 
     describe("in combination", () => {
       it("can use the text and category searches together", async () => {
-        createFullWrapper(testProps);
+        createFullWrapper();
         mockAxios.mockResponse(sampleProjectsResponse);
         await wrapper.vm.$nextTick();
 

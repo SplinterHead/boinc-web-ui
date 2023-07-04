@@ -5,10 +5,10 @@ import mockAxios from "jest-mock-axios";
 
 import MessageList from "@/components/MessageList.vue";
 
-let wrapper;
-let state;
 let getters;
+let state;
 let store;
+let wrapper;
 
 const localVue = createLocalVue();
 const noMessages = { messages: {} };

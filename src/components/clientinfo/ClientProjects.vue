@@ -1,12 +1,12 @@
 <template>
   <b-card title="Projects">
-    <div id="no-projects-msg" v-if="activeClientState.projects.length == 0">
+    <div id="no-projects-msg" v-show="projects.length == 0">
       This client is not attached to any projects
     </div>
     <b-table
-      v-else
+      v-show="projects.length > 0"
       :fields="fields"
-      :items="activeClientState.projects"
+      :items="projects"
       sort-by="project_name"
       :sort-desc="true"
       small
@@ -66,12 +66,12 @@ import axios from "axios";
 export default {
   name: "ClientProjects",
   props: {
-    activeClient: {
-      type: Object,
+    activeClientId: {
+      type: String,
       required: true,
     },
-    activeClientState: {
-      type: Object,
+    projects: {
+      type: Array,
       required: true,
     },
   },
@@ -95,7 +95,7 @@ export default {
     callProjectEndpoint(endpointUrl, projectUrl) {
       axios
         .post(
-          `${process.env.VUE_APP_API_URL}/${endpointUrl}?client=${this.activeClient.id}`,
+          `${process.env.VUE_APP_API_URL}/${endpointUrl}?client=${this.activeClientId}`,
           { url: projectUrl }
         )
         .catch((msg) => {
