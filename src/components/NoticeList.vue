@@ -40,12 +40,24 @@ export default {
         { key: "description", label: "Notice" },
       ],
       notices: {},
+      timer: "",
+      unsubscribe: "",
     };
   },
-  methods: {
-    convertEpoch(epoch) {
-      return new Date(epoch).toLocaleString();
-    },
+  created() {
+    this.timer = setInterval(this.getClientNotices, 5000);
+    this.unsubscribe = this.$store.subscribe((mutation) => {
+      if (mutation.type === "clients/setActiveClientId") {
+        this.getClientNotices();
+      }
+    });
+  },
+  mounted() {
+    this.getClientNotices();
+  },
+  beforeDestroy() {
+    clearInterval(this.timer);
+    this.unsubscribe();
   },
   computed: {
     noticesArr() {
@@ -57,14 +69,22 @@ export default {
     },
     ...mapGetters("clients", ["activeClientId"]),
   },
-  mounted() {
-    axios
-      .get(
-        `${process.env.VUE_APP_API_URL}/notices/all?client=${this.activeClientId}`
-      )
-      .then((response) => {
-        this.notices = response.data.notices;
-      });
+  methods: {
+    getClientNotices() {
+      if (this.activeClientId) {
+        console.log("Getting client notices");
+        axios
+          .get(
+            `${process.env.VUE_APP_API_URL}/notices/all?client=${this.activeClientId}`
+          )
+          .then((response) => {
+            this.notices = response.data.notices;
+          });
+      }
+    },
+    convertEpoch(epoch) {
+      return new Date(epoch).toLocaleString();
+    },
   },
 };
 </script>

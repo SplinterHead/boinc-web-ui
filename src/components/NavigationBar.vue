@@ -19,6 +19,16 @@
 
     <br />
     <router-link
+      to="/clientinfo"
+      id="client-info-nav"
+      :class="linkDisabled ? 'disabled' : 'active'"
+      :event="linkDisabled ? 'none' : 'click'"
+    >
+      Client Info
+    </router-link>
+
+    <br />
+    <router-link
       to="/projects"
       id="project-list-nav"
       :class="linkDisabled ? 'disabled' : 'active'"

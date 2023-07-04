@@ -44,9 +44,6 @@ export default {
       unsubscribe: "",
     };
   },
-  computed: {
-    ...mapGetters("clients", ["activeClient", "activeClientId"]),
-  },
   created() {
     this.timer = setInterval(this.getActiveClientState, 5000);
     this.unsubscribe = this.$store.subscribe((mutation) => {
@@ -62,9 +59,13 @@ export default {
     clearInterval(this.timer);
     this.unsubscribe();
   },
+  computed: {
+    ...mapGetters("clients", ["activeClient", "activeClientId"]),
+  },
   methods: {
     getActiveClientState() {
-      if (this.activeClientId != "") {
+      if (this.activeClientId) {
+        console.log("Getting client info");
         axios
           .get(
             `${process.env.VUE_APP_API_URL}/client/state?client=${this.activeClientId}`

@@ -41,12 +41,24 @@ export default {
         { key: "body", title: "" },
       ],
       messages: {},
+      timer: "",
+      unsubscribe: "",
     };
   },
-  methods: {
-    convertEpoch(epoch) {
-      return new Date(epoch).toLocaleString();
-    },
+  created() {
+    this.timer = setInterval(this.getClientMessages, 5000);
+    this.unsubscribe = this.$store.subscribe((mutation) => {
+      if (mutation.type === "clients/setActiveClientId") {
+        this.getClientMessages();
+      }
+    });
+  },
+  mounted() {
+    this.getClientMessages();
+  },
+  beforeDestroy() {
+    clearInterval(this.timer);
+    this.unsubscribe();
   },
   computed: {
     messagesArr() {
@@ -58,14 +70,22 @@ export default {
     },
     ...mapGetters("clients", ["activeClientId"]),
   },
-  mounted() {
-    axios
-      .get(
-        `${process.env.VUE_APP_API_URL}/messages/all?client=${this.activeClientId}`
-      )
-      .then((response) => {
-        this.messages = response.data.messages;
-      });
+  methods: {
+    getClientMessages() {
+      if (this.activeClientId) {
+        console.log("Getting client messages");
+        axios
+          .get(
+            `${process.env.VUE_APP_API_URL}/messages/all?client=${this.activeClientId}`
+          )
+          .then((response) => {
+            this.messages = response.data.messages;
+          });
+      }
+    },
+    convertEpoch(epoch) {
+      return new Date(epoch).toLocaleString();
+    },
   },
 };
 </script>

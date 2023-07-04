@@ -11,7 +11,7 @@ Vue.use(VueRouter);
 
 const routes = [
   { path: "/", component: App },
-  { path: "/client", component: ClientInfo },
+  { path: "/clientinfo", component: ClientInfo },
   { path: "/messages", component: MessageList },
   { path: "/notices", component: NoticeList },
   { path: "/projects", component: ProjectList },

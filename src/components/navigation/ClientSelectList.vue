@@ -11,7 +11,6 @@
           : activeClient.name | truncate(21, '...')
       "
       toggleText=""
-      @click="setActivePane()"
     >
       <b-dropdown-item
         v-for="client in allClients"
@@ -47,9 +46,6 @@ export default {
     NewClientModal,
   },
   methods: {
-    setActivePane() {
-      this.$emit("set-active-pane", "clientinfo");
-    },
     ...mapActions("clients", ["setActiveClient", "updateClients"]),
   },
   computed: {

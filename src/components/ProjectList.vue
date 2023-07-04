@@ -106,18 +106,24 @@ export default {
         searchString: "",
         platform: false,
       },
+      timer: "",
+      unsubscribe: "",
     };
   },
+  created() {
+    this.timer = setInterval(this.getClientProjects, 5000);
+    this.unsubscribe = this.$store.subscribe((mutation) => {
+      if (mutation.type === "clients/setActiveClientId") {
+        this.getClientProjects();
+      }
+    });
+  },
   mounted() {
-    if (this.activeClientId) {
-      axios
-        .get(
-          `${process.env.VUE_APP_API_URL}/projects/all?client=${this.activeClientId}`
-        )
-        .then((response) => {
-          this.allProjects = response.data.projects;
-        });
-    }
+    this.getClientProjects();
+  },
+  beforeDestroy() {
+    clearInterval(this.timer);
+    this.unsubscribe();
   },
   computed: {
     categories() {
@@ -163,6 +169,18 @@ export default {
     ...mapGetters("clients", ["activeClient", "activeClientId"]),
   },
   methods: {
+    getClientProjects() {
+      if (this.activeClientId) {
+        console.log("Getting client projects");
+        axios
+          .get(
+            `${process.env.VUE_APP_API_URL}/projects/all?client=${this.activeClientId}`
+          )
+          .then((response) => {
+            this.allProjects = response.data.projects;
+          });
+      }
+    },
     setCategory(category) {
       this.filters.category = category;
       this.filters.subCategory = "";
