@@ -41,6 +41,7 @@ export default {
       projects: [],
       results: [],
       timer: "",
+      unsubscribe: "",
     };
   },
   computed: {
@@ -48,24 +49,32 @@ export default {
   },
   created() {
     this.timer = setInterval(this.getActiveClientState, 5000);
+    this.unsubscribe = this.$store.subscribe((mutation) => {
+      if (mutation.type === "clients/setActiveClientId") {
+        this.getActiveClientState();
+      }
+    });
   },
   mounted() {
     this.getActiveClientState();
   },
-  beforeUnmount() {
+  beforeDestroy() {
     clearInterval(this.timer);
+    this.unsubscribe();
   },
   methods: {
     getActiveClientState() {
-      axios
-        .get(
-          `${process.env.VUE_APP_API_URL}/client/state?client=${this.activeClientId}`
-        )
-        .then((response) => {
-          this.activeClientState = response.data;
-          this.projects = response.data.projects;
-          this.results = response.data.results;
-        });
+      if (this.activeClientId != "") {
+        axios
+          .get(
+            `${process.env.VUE_APP_API_URL}/client/state?client=${this.activeClientId}`
+          )
+          .then((response) => {
+            this.activeClientState = response.data;
+            this.projects = response.data.projects;
+            this.results = response.data.results;
+          });
+      }
     },
   },
 };
