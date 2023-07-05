@@ -31,6 +31,8 @@ const firstRow = () => resultTableRows().at(0);
 const secondRow = () => resultTableRows().at(1);
 const firstRowProjectName = () => firstRow().findAll("td").at(1);
 const firstRowProgressBar = () => firstRow().findAll("td").at(2);
+const firstRowTimeRemaining = () => firstRow().findAll("td").at(3);
+const secondRowTimeRemaining = () => secondRow().findAll("td").at(3);
 
 function createWrapper({ shallow = true, clientId = "" }) {
   state = {
@@ -184,13 +186,9 @@ describe("TaskList.vue", () => {
 
       wrapper.vm.$nextTick().then(() => {
         expect(firstRowProgressBar().text()).toBe("Queued");
-        expect(
-          secondRow()
-            .findAll("td")
-            .at(2)
-            .get("div[role='progressbar']")
-            .isVisible()
-        ).toBe(true);
+        expect(secondRow().get("div[role='progressbar']").isVisible()).toBe(
+          true
+        );
       });
     });
 
@@ -223,5 +221,48 @@ describe("TaskList.vue", () => {
         });
       }
     );
+
+    it("displays the active task time remaining", () => {
+      const testResults = [
+        {
+          name: "test_work_unit_name_2",
+          state: 2,
+          active_task: { active_task_state: 0 },
+          estimated_cpu_time_remaining: 60,
+        },
+      ];
+      createWrapper({ shallow: false, clientId: "123" });
+      mockAxios.mockResponse({
+        data: { results: testResults, projects: testProjects },
+      });
+
+      wrapper.vm.$nextTick().then(() => {
+        expect(firstRowTimeRemaining().text()).toBe("00:01:00");
+      });
+    });
+
+    it("does not display the time remaining for inactive tasks", () => {
+      const testResults = [
+        {
+          name: "test_work_unit_name",
+          state: 2,
+          estimated_cpu_time_remaining: 60,
+        },
+        {
+          name: "test_work_unit_name_2",
+          state: 5,
+          estimated_cpu_time_remaining: 60,
+        },
+      ];
+      createWrapper({ shallow: false, clientId: "123" });
+      mockAxios.mockResponse({
+        data: { results: testResults, projects: testProjects },
+      });
+
+      wrapper.vm.$nextTick().then(() => {
+        expect(firstRowTimeRemaining().text()).toBe("");
+        expect(secondRowTimeRemaining().text()).toBe("");
+      });
+    });
   });
 });

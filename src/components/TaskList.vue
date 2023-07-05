@@ -47,42 +47,15 @@
           {{ decodeTaskState(data.item.state).state }}
         </span>
       </template>
-    </b-table>
-  </div>
-  <!-- <b-card title="Tasks">
-    <div id="no-projects-msg" v-if="results.length == 0">
-      This client has no work to do
-      <p />
-      Check it is attached to projects and that they aren't paused
-    </div>
-    <b-table
-      v-else
-      :fields="fields"
-      :items="results"
-      sort-by="active_task.fraction_done"
-      :sort-desc="true"
-      small
-      sort-icon-left
-      label-sort-asc=""
-      label-sort-desc=""
-      label-sort-clear=""
-    > 
-     <template v-slot:cell(progress)="data">
-        <b-progress
-          v-if="data.item.active_task"
-          :value="data.item.active_task.fraction_done * 100"
-          precision="2"
-          max="100"
-          show-progress
-          :animated="data.item.active_task.active_task_state != 9"
-          :variant="
-            decodeActiveState(data.item.active_task.active_task_state).variant
-          "
-        />
-        <span v-else>{{ decodeTaskState(data.item.state).state }}</span>
+      <template v-slot:cell(remaining_time)="data">
+        {{
+          data.item.active_task
+            ? secondsToHms(data.item.estimated_cpu_time_remaining)
+            : ""
+        }}
       </template>
     </b-table>
-  </b-card> -->
+  </div>
 </template>
 
 <script>
@@ -97,6 +70,7 @@ export default {
         { key: "name", sortable: true },
         { key: "project", sortable: true },
         "progress",
+        "remaining_time",
       ],
       projects: [],
       tasks: [],
@@ -183,6 +157,13 @@ export default {
         case 10:
           return { state: "Copying", variant: "success" };
       }
+    },
+    secondsToHms(seconds) {
+      let sec = Number(seconds);
+      let h = String(Math.floor(sec / 3600)).padStart(2, "0");
+      let m = String(Math.floor((sec % 3600) / 60)).padStart(2, "0");
+      let s = String(Math.floor((sec % 3600) % 60)).padStart(2, "0");
+      return `${h}:${m}:${s}`;
     },
   },
   watch: {
