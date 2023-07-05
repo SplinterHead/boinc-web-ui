@@ -107,16 +107,10 @@ export default {
         platform: false,
       },
       timer: "",
-      unsubscribe: "",
     };
   },
   created() {
     this.timer = setInterval(this.getClientProjects, 5000);
-    this.unsubscribe = this.$store.subscribe((mutation) => {
-      if (mutation.type === "clients/setActiveClientId") {
-        this.getClientProjects();
-      }
-    });
   },
   mounted() {
     this.getClientProjects();
@@ -187,6 +181,11 @@ export default {
     },
     setSubCategory(subCategory) {
       this.filters.subCategory = subCategory;
+    },
+  },
+  watch: {
+    activeClientId() {
+      this.getClientProjects();
     },
   },
 };

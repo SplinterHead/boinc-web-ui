@@ -41,23 +41,16 @@ export default {
       ],
       notices: {},
       timer: "",
-      unsubscribe: "",
     };
   },
   created() {
     this.timer = setInterval(this.getClientNotices, 5000);
-    this.unsubscribe = this.$store.subscribe((mutation) => {
-      if (mutation.type === "clients/setActiveClientId") {
-        this.getClientNotices();
-      }
-    });
   },
   mounted() {
     this.getClientNotices();
   },
   beforeDestroy() {
     clearInterval(this.timer);
-    this.unsubscribe();
   },
   computed: {
     noticesArr() {
@@ -84,6 +77,11 @@ export default {
     },
     convertEpoch(epoch) {
       return new Date(epoch).toLocaleString();
+    },
+  },
+  watch: {
+    activeClientId() {
+      this.getClientNotices();
     },
   },
 };

@@ -41,23 +41,16 @@ export default {
       projects: [],
       results: [],
       timer: "",
-      unsubscribe: "",
     };
   },
   created() {
     this.timer = setInterval(this.getActiveClientState, 5000);
-    this.unsubscribe = this.$store.subscribe((mutation) => {
-      if (mutation.type === "clients/setActiveClientId") {
-        this.getActiveClientState();
-      }
-    });
   },
   mounted() {
     this.getActiveClientState();
   },
   beforeDestroy() {
     clearInterval(this.timer);
-    this.unsubscribe();
   },
   computed: {
     ...mapGetters("clients", ["activeClient", "activeClientId"]),
@@ -76,6 +69,11 @@ export default {
             this.results = response.data.results;
           });
       }
+    },
+  },
+  watch: {
+    activeClientId() {
+      this.getActiveClientState();
     },
   },
 };
