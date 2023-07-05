@@ -117,7 +117,6 @@ export default {
   },
   beforeDestroy() {
     clearInterval(this.timer);
-    this.unsubscribe();
   },
   computed: {
     categories() {
@@ -165,7 +164,6 @@ export default {
   methods: {
     getClientProjects() {
       if (this.activeClientId) {
-        console.log("Getting client projects");
         axios
           .get(
             `${process.env.VUE_APP_API_URL}/projects/all?client=${this.activeClientId}`

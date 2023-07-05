@@ -65,7 +65,6 @@ export default {
   methods: {
     getClientNotices() {
       if (this.activeClientId) {
-        console.log("Getting client notices");
         axios
           .get(
             `${process.env.VUE_APP_API_URL}/notices/all?client=${this.activeClientId}`

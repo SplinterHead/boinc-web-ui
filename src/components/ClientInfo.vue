@@ -58,7 +58,6 @@ export default {
   methods: {
     getActiveClientState() {
       if (this.activeClientId) {
-        console.log("Getting client info");
         axios
           .get(
             `${process.env.VUE_APP_API_URL}/client/state?client=${this.activeClientId}`

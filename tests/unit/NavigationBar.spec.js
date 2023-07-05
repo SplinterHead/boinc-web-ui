@@ -18,9 +18,10 @@ let getters;
 let store;
 
 const sidebar = () => wrapper.findComponent(BSidebar);
-const projectListLink = () => wrapper.get("#project-list-nav");
-const noticeListLink = () => wrapper.get("#notice-list-nav");
-const messageListLink = () => wrapper.get("#message-list-nav");
+const taskListLink = () => sidebar().get("#task-list-nav");
+const projectListLink = () => sidebar().get("#project-list-nav");
+const noticeListLink = () => sidebar().get("#notice-list-nav");
+const messageListLink = () => sidebar().get("#message-list-nav");
 
 state = {
   activeClientId: "",
@@ -61,6 +62,7 @@ describe("NavigationBar.vue", () => {
     it("has all menu entries", () => {
       createWrapper();
 
+      expect(taskListLink().text()).toBe("Tasks");
       expect(projectListLink().text()).toBe("Project List");
       expect(noticeListLink().text()).toBe("Notices");
       expect(messageListLink().text()).toBe("Messages");

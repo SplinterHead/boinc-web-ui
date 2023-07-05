@@ -87,8 +87,10 @@ describe("Messages.vue", () => {
     createWrapper();
     mockAxios.mockResponse({ data: noMessages });
 
-    expect(messageDiv().isVisible()).toBe(true);
-    expect(messageDiv().text()).toBe("No messages for this client");
+    wrapper.vm.$nextTick().then(() => {
+      expect(messageDiv().isVisible()).toBe(true);
+      expect(messageDiv().text()).toBe("No messages for this client");
+    });
   });
 
   describe("messages are rendered in a table", () => {

@@ -29,6 +29,16 @@
 
     <br />
     <router-link
+      to="/tasks"
+      id="task-list-nav"
+      :class="linkDisabled ? 'disabled' : 'active'"
+      :event="linkDisabled ? 'none' : 'click'"
+    >
+      Tasks
+    </router-link>
+
+    <br />
+    <router-link
       to="/projects"
       id="project-list-nav"
       :class="linkDisabled ? 'disabled' : 'active'"

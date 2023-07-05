@@ -66,7 +66,6 @@ export default {
   methods: {
     getClientMessages() {
       if (this.activeClientId) {
-        console.log("Getting client messages");
         axios
           .get(
             `${process.env.VUE_APP_API_URL}/messages/all?client=${this.activeClientId}`
