@@ -1,22 +1,34 @@
 <template>
-  <b-card title="Projects">
-    <div id="no-projects-msg" v-show="projects.length == 0">
-      This client is not attached to any projects
+  <div>
+    <h1>Projects</h1>
+    <b-navbar id="new-project-bar" toggleable="lg" variant="light">
+      <b-navbar-nav>
+        <router-link to="/addproject" tag="b-button">Add Project</router-link>
+      </b-navbar-nav>
+    </b-navbar>
+    <div id="message-div" v-show="projects.length == 0">
+      <div id="no-client" v-show="!activeClientId">
+        Please select a client to see it's projects
+      </div>
+      <div id="no-projects" v-show="activeClientId">
+        This client is not attached to any projects
+        <br />
+        Please add some so it's not twiddling it's thumbs
+      </div>
     </div>
     <b-table
+      small
+      id="project-table"
       v-show="projects.length > 0"
       :fields="fields"
       :items="projects"
       sort-by="project_name"
-      :sort-desc="true"
-      small
-      sort-icon-left
-      label-sort-asc=""
-      label-sort-desc=""
-      label-sort-clear=""
     >
       <template v-slot:cell(resource_share)="data">
         {{ data.value }}%
+      </template>
+      <template v-slot:cell(user_total_credit)="data">
+        {{ data.value.toFixed(2) }}
       </template>
       <template v-slot:cell(operations)="data">
         <font-awesome-icon
@@ -26,7 +38,11 @@
           v-if="!data.item.suspended_via_gui"
           @click="suspendProject(data.item.master_url)"
         />
-        <b-tooltip target="project-suspend" triggers="hover">
+        <b-tooltip
+          target="project-suspend"
+          triggers="hover"
+          placement="topright"
+        >
           Suspend
         </b-tooltip>
         <font-awesome-icon
@@ -36,45 +52,57 @@
           v-if="data.item.suspended_via_gui"
           @click="resumeProject(data.item.master_url)"
         />
-        <b-tooltip target="project-resume" triggers="hover"> Resume </b-tooltip>
+        <b-tooltip
+          target="project-resume"
+          v-if="data.item.suspended_via_gui"
+          triggers="hover"
+          placement="topright"
+        >
+          Resume
+        </b-tooltip>
         <font-awesome-icon
           id="project-reset"
           icon="fa-solid fa-arrow-rotate-left"
           @click="resetProject(data.item.master_url)"
         />
-        <b-tooltip target="project-reset" triggers="hover"> Reset </b-tooltip>
+        <b-tooltip target="project-reset" triggers="hover" placement="topright">
+          Reset
+        </b-tooltip>
         <font-awesome-icon
           id="project-update"
           icon="fa-solid fa-rotate"
           @click="updateProject(data.item.master_url)"
         />
-        <b-tooltip target="project-update" triggers="hover"> Update </b-tooltip>
+        <b-tooltip
+          target="project-update"
+          triggers="hover"
+          placement="topright "
+        >
+          Update
+        </b-tooltip>
         <font-awesome-icon
           id="project-detach"
           icon="fa-solid fa-trash-can"
           @click="detachProject(data.item.master_url)"
         />
-        <b-tooltip target="project-detach" triggers="hover"> Detach </b-tooltip>
+        <b-tooltip
+          target="project-detach"
+          triggers="hover"
+          placement="topright"
+        >
+          Detach
+        </b-tooltip>
       </template>
     </b-table>
-  </b-card>
+  </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import axios from "axios";
 
 export default {
   name: "ClientProjects",
-  props: {
-    activeClientId: {
-      type: String,
-      required: true,
-    },
-    projects: {
-      type: Array,
-      required: true,
-    },
-  },
   data() {
     return {
       disabledIcons: {
@@ -86,12 +114,41 @@ export default {
       },
       fields: [
         "project_name",
+        "user_name",
+        "team_name",
         "resource_share",
+        { key: "user_total_credit", label: "User Credit" },
         { key: "operations", label: "", class: "project-controls" },
       ],
+      projects: [],
+      timer: "",
     };
   },
+  created() {
+    this.timer = setInterval(this.getAttachedProjects, 5000);
+  },
+  mounted() {
+    this.getAttachedProjects();
+  },
+  beforeDestroy() {
+    clearInterval(this.timer);
+  },
+  computed: {
+    ...mapGetters("clients", ["activeClientId"]),
+  },
   methods: {
+    getAttachedProjects() {
+      if (this.activeClientId) {
+        axios
+          .get(
+            `${process.env.VUE_APP_API_URL}/projects/attached?client=${this.activeClientId}`
+          )
+          .then((response) => (this.projects = response.data.project_status))
+          .catch((msg) => {
+            console.log(msg);
+          });
+      }
+    },
     callProjectEndpoint(endpointUrl, projectUrl) {
       axios
         .post(
@@ -128,6 +185,11 @@ export default {
       this.disabledIcons.rotate = false;
     },
   },
+  watch: {
+    activeClientId() {
+      this.getAttachedProjects();
+    },
+  },
 };
 </script>
 
@@ -145,3 +207,4 @@ export default {
   color: grey;
 }
 </style>
+>

@@ -76,22 +76,24 @@ describe("TaskList.vue", () => {
     expect(titleText()).toBe("Task List");
   });
 
-  it("displays the 'select client' message when no client is active", () => {
-    createWrapper({ shallow: false });
+  describe("message div should inform the user", () => {
+    it("displays the 'select client' message when no client is active", () => {
+      createWrapper({ shallow: false });
 
-    expect(resultTable().isVisible()).toBe(false);
-    expect(messageDiv().isVisible()).toBe(true);
-    expect(noClientMsg().isVisible()).toBe(true);
-    expect(noTasksMsg().isVisible()).toBe(false);
-  });
+      expect(resultTable().isVisible()).toBe(false);
+      expect(messageDiv().isVisible()).toBe(true);
+      expect(noClientMsg().isVisible()).toBe(true);
+      expect(noTasksMsg().isVisible()).toBe(false);
+    });
 
-  it("displays the 'no tasks' message when there is no work", () => {
-    createWrapper({ shallow: false, clientId: "123" });
+    it("displays the 'no tasks' message when there is no work", () => {
+      createWrapper({ shallow: false, clientId: "123" });
 
-    expect(resultTable().isVisible()).toBe(false);
-    expect(messageDiv().isVisible()).toBe(true);
-    expect(noClientMsg().isVisible()).toBe(false);
-    expect(noTasksMsg().isVisible()).toBe(true);
+      expect(resultTable().isVisible()).toBe(false);
+      expect(messageDiv().isVisible()).toBe(true);
+      expect(noClientMsg().isVisible()).toBe(false);
+      expect(noTasksMsg().isVisible()).toBe(true);
+    });
   });
 
   it("calls the client state API endpoint", () => {

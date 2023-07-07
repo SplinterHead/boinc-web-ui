@@ -11,7 +11,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import mockAxios from "jest-mock-axios";
 
-import ProjectList from "@/components/ProjectList.vue";
+import ProjectList from "@/components/project/ProjectList.vue";
 import ProjectCard from "@/components/project/ProjectCard.vue";
 
 const localVue = createLocalVue();
