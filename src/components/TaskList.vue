@@ -31,6 +31,13 @@
             : "Unknown Project"
         }}
       </template>
+      <template v-slot:cell(elapsed_time)="data">
+        {{
+          data.item.active_task
+            ? secondsToHms(data.item.active_task.current_cpu_time)
+            : ""
+        }}
+      </template>
       <template v-slot:cell(progress)="data">
         <b-progress
           v-if="data.item.active_task"
@@ -69,6 +76,7 @@ export default {
       fields: [
         { key: "name", sortable: true },
         { key: "project", sortable: true },
+        "elapsed_time",
         "progress",
         "remaining_time",
       ],

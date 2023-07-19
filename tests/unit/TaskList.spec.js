@@ -30,9 +30,10 @@ const resultTableRows = () => resultTable().get("tbody").findAll("tr");
 const firstRow = () => resultTableRows().at(0);
 const secondRow = () => resultTableRows().at(1);
 const firstRowProjectName = () => firstRow().findAll("td").at(1);
-const firstRowProgressBar = () => firstRow().findAll("td").at(2);
-const firstRowTimeRemaining = () => firstRow().findAll("td").at(3);
-const secondRowTimeRemaining = () => secondRow().findAll("td").at(3);
+const firstRowElapsedTime = () => firstRow().findAll("td").at(2);
+const firstRowProgressBar = () => firstRow().findAll("td").at(3);
+const firstRowTimeRemaining = () => firstRow().findAll("td").at(4);
+const secondRowTimeRemaining = () => secondRow().findAll("td").at(4);
 
 function createWrapper({ shallow = true, clientId = "" }) {
   state = {
@@ -144,6 +145,25 @@ describe("TaskList.vue", () => {
 
       wrapper.vm.$nextTick().then(() => {
         expect(firstRowProjectName().text()).toBe(testProjects[0].project_name);
+      });
+    });
+
+    it("displays the active task elapsed time", () => {
+      const testResults = [
+        {
+          name: "test_work_unit_name_2",
+          state: 2,
+          active_task: { active_task_state: 0, current_cpu_time: 30 },
+          estimated_cpu_time_remaining: 60,
+        },
+      ];
+      createWrapper({ shallow: false, clientId: "123" });
+      mockAxios.mockResponse({
+        data: { results: testResults, projects: testProjects },
+      });
+
+      wrapper.vm.$nextTick().then(() => {
+        expect(firstRowElapsedTime().text()).toBe("00:00:30");
       });
     });
 
@@ -262,6 +282,7 @@ describe("TaskList.vue", () => {
       });
 
       wrapper.vm.$nextTick().then(() => {
+        expect(firstRowElapsedTime().text()).toBe("");
         expect(firstRowTimeRemaining().text()).toBe("");
         expect(secondRowTimeRemaining().text()).toBe("");
       });

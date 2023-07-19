@@ -28,7 +28,6 @@ let store;
 let wrapper;
 
 const localVue = createLocalVue();
-const testPropsNoProjects = [];
 const testPropsSuspendedProjects = [
   {
     master_url: "http://www.worldcommunitygrid.org/",
