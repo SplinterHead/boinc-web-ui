@@ -1,12 +1,20 @@
-import { createLocalVue, mount, shallowMount } from "@vue/test-utils";
+import {
+  createLocalVue,
+  mount,
+  RouterLinkStub,
+  shallowMount,
+} from "@vue/test-utils";
 import Vuex from "vuex";
+import VueRouter from "vue-router";
 import { BootstrapVue } from "bootstrap-vue";
 import mockAxios from "jest-mock-axios";
 
 import ClientProjects from "@/components/ClientProjects.vue";
+
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import {
+  faAngleRight,
   faArrowRotateLeft,
   faPause,
   faPlay,
@@ -89,7 +97,14 @@ const testPropsWithProjects = [
   },
 ];
 
-library.add([faArrowRotateLeft, faPause, faPlay, faRotate, faTrashCan]);
+library.add([
+  faAngleRight,
+  faArrowRotateLeft,
+  faPause,
+  faPlay,
+  faRotate,
+  faTrashCan,
+]);
 localVue.component("font-awesome-icon", FontAwesomeIcon);
 localVue.use(BootstrapVue);
 localVue.use(Vuex);
@@ -104,13 +119,14 @@ const addProjectBtn = () => wrapper.get("#new-project");
 const projectTable = () => wrapper.get("#project-table");
 const projectTableRows = () => projectTable().get("tbody").findAll("tr");
 const firstRow = () => projectTableRows().at(0);
-const firstRowProjectName = () => firstRow().findAll("td").at(0);
-const firstRowUserName = () => firstRow().findAll("td").at(1);
-const firstRowTeamName = () => firstRow().findAll("td").at(2);
-const firstRowResourceShare = () => firstRow().findAll("td").at(3);
-const firstRowUserCredit = () => firstRow().findAll("td").at(4);
+const firstRowExpand = () => firstRow().findAll("td").at(0);
+const firstRowProjectName = () => firstRow().findAll("td").at(1);
+const firstRowUserName = () => firstRow().findAll("td").at(2);
+const firstRowTeamName = () => firstRow().findAll("td").at(3);
+const firstRowResourceShare = () => firstRow().findAll("td").at(4);
+const firstRowUserCredit = () => firstRow().findAll("td").at(5);
 const firstRowProjectControls = () =>
-  firstRow().findAll("td").at(5).findAllComponents(FontAwesomeIcon);
+  firstRow().findAll("td").at(6).findAllComponents(FontAwesomeIcon);
 
 function createWrapper({ shallow = true, clientId = "" }) {
   state = {
@@ -355,6 +371,22 @@ describe("ClientProjects.vue", () => {
             }
           );
         });
+      });
+    });
+  });
+
+  describe("expanded project details", () => {
+    it("displays an icon for exanding the project details", () => {
+      createWrapper({ shallow: false, clientId: "123" });
+      mockAxios.mockResponse({
+        data: { project_status: testPropsWithProjects },
+      });
+
+      wrapper.vm.$nextTick().then(() => {
+        expect(firstRowExpand().isVisible()).toBe(true);
+        expect(
+          firstRowExpand().get("#project-expand").attributes("class")
+        ).toContain("fa-angle-right");
       });
     });
   });

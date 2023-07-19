@@ -26,6 +26,24 @@
       :items="projects"
       sort-by="project_name"
     >
+      <template v-slot:cell(expand)="row">
+        <div>
+          <font-awesome-icon
+            id="project-expand"
+            icon="fa-solid fa-angle-right"
+            :rotation="row.detailsShowing ? 90 : null"
+            @click="row.toggleDetails()"
+          />
+        </div>
+      </template>
+      <template #row-details="row">
+        <b-row class="mb-2">
+          <b-col cols="1">Links:</b-col>
+          <b-col v-for="link in row.item.gui_urls" :key="link.name">
+            <a :href="link.url" target="_blank">{{ link.name }}</a>
+          </b-col>
+        </b-row>
+      </template>
       <template v-slot:cell(resource_share)="data">
         {{ data.value }}%
       </template>
@@ -115,6 +133,7 @@ export default {
         rotate: false,
       },
       fields: [
+        { key: "expand", label: "" },
         "project_name",
         "user_name",
         "team_name",
@@ -196,6 +215,9 @@ export default {
 </script>
 
 <style>
+#project-expand {
+  transition: 0.1s;
+}
 .project-controls {
   text-align: right !important;
 }

@@ -7,6 +7,7 @@ import { BootstrapVue } from "bootstrap-vue";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import {
+  faAngleRight,
   faArrowRotateLeft,
   faPause,
   faPlay,
@@ -23,6 +24,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 
 library.add([
+  faAngleRight,
   faApple,
   faArrowRotateLeft,
   faLinux,
