@@ -93,6 +93,7 @@ library.add([faArrowRotateLeft, faPause, faPlay, faRotate, faTrashCan]);
 localVue.component("font-awesome-icon", FontAwesomeIcon);
 localVue.use(BootstrapVue);
 localVue.use(Vuex);
+localVue.use(VueRouter);
 
 const titleText = () => wrapper.get("h1").text();
 const messageDiv = () => wrapper.get("#message-div");
@@ -130,13 +131,19 @@ function createWrapper({ shallow = true, clientId = "" }) {
 
   if (shallow) {
     wrapper = shallowMount(ClientProjects, {
-      localVue,
       store,
+      localVue,
+      stubs: {
+        RouterLink: RouterLinkStub,
+      },
     });
   } else {
     wrapper = mount(ClientProjects, {
-      localVue,
       store,
+      localVue,
+      stubs: {
+        RouterLink: RouterLinkStub,
+      },
     });
   }
 }
@@ -185,7 +192,7 @@ describe("ClientProjects.vue", () => {
 
   describe("add project", () => {
     it("displays a button for adding a new project", () => {
-      createWrapper({ clientId: "123" });
+      createWrapper({ shallow: false, clientId: "123" });
 
       expect(addProjectBtn().isVisible()).toBe(true);
     });

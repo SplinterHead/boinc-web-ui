@@ -1,6 +1,3 @@
-<script src="https://unpkg.com/vue@2/dist/vue.js"></script>
-<script src="https://unpkg.com/vue-router@3/dist/vue-router.js"></script>
-
 <template>
   <b-sidebar
     class="text-center"

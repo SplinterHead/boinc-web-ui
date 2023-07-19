@@ -5,17 +5,17 @@ import VueRouter from "vue-router";
 
 import NavigationBar from "@/components/NavigationBar.vue";
 
+let getters;
+let state;
+let store;
+let wrapper;
+
 const localVue = createLocalVue();
 const localRouter = new VueRouter();
 
 localVue.use(BootstrapVue);
 localVue.use(Vuex);
 localVue.use(VueRouter);
-
-let wrapper;
-let state;
-let getters;
-let store;
 
 const sidebar = () => wrapper.findComponent(BSidebar);
 const taskListLink = () => sidebar().get("#task-list-nav");

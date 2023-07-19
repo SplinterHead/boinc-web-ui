@@ -3,7 +3,9 @@
     <h1>Projects</h1>
     <b-navbar id="new-project-bar" toggleable="lg" variant="light">
       <b-navbar-nav>
-        <router-link to="/addproject" tag="b-button">Add Project</router-link>
+        <router-link id="new-project" to="/addproject" tag="b-button">
+          Add Project
+        </router-link>
       </b-navbar-nav>
     </b-navbar>
     <div id="message-div" v-show="projects.length == 0">
