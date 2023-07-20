@@ -4,37 +4,9 @@ import store from "./store";
 import App from "./App.vue";
 import { BootstrapVue } from "bootstrap-vue";
 
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import {
-  faAngleRight,
-  faArrowRotateLeft,
-  faPause,
-  faPlay,
-  faRotate,
-  faTrashCan,
-} from "@fortawesome/free-solid-svg-icons";
-import {
-  faApple,
-  faLinux,
-  faWindows,
-} from "@fortawesome/free-brands-svg-icons";
-
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
-
-library.add([
-  faAngleRight,
-  faApple,
-  faArrowRotateLeft,
-  faLinux,
-  faPause,
-  faPlay,
-  faRotate,
-  faTrashCan,
-  faWindows,
-]);
-Vue.component("font-awesome-icon", FontAwesomeIcon);
+import "vue-material-design-icons/styles.css";
 
 Vue.use(BootstrapVue);
 

@@ -1,14 +1,6 @@
 import { createLocalVue, mount, shallowMount } from "@vue/test-utils";
 import Vuex from "vuex";
 import { BDropdownItem, BootstrapVue } from "bootstrap-vue";
-
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import {
-  faApple,
-  faLinux,
-  faWindows,
-} from "@fortawesome/free-brands-svg-icons";
 import mockAxios from "jest-mock-axios";
 
 import ProjectList from "@/components/project/ProjectList.vue";
@@ -87,8 +79,6 @@ const sampleClientState = {
 
 localVue.use(BootstrapVue);
 localVue.use(Vuex);
-library.add([faApple, faLinux, faWindows]);
-localVue.component("font-awesome-icon", FontAwesomeIcon);
 
 let getters;
 let state;

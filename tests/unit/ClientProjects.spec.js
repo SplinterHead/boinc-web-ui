@@ -11,17 +11,6 @@ import mockAxios from "jest-mock-axios";
 
 import ClientProjects from "@/components/ClientProjects.vue";
 
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import {
-  faAngleRight,
-  faArrowRotateLeft,
-  faPause,
-  faPlay,
-  faRotate,
-  faTrashCan,
-} from "@fortawesome/free-solid-svg-icons";
-
 let getters;
 let state;
 let store;
@@ -96,15 +85,6 @@ const testPropsWithProjects = [
   },
 ];
 
-library.add([
-  faAngleRight,
-  faArrowRotateLeft,
-  faPause,
-  faPlay,
-  faRotate,
-  faTrashCan,
-]);
-localVue.component("font-awesome-icon", FontAwesomeIcon);
 localVue.use(BootstrapVue);
 localVue.use(Vuex);
 localVue.use(VueRouter);
@@ -125,8 +105,7 @@ const firstRowUserName = () => firstRowCols().at(2);
 const firstRowTeamName = () => firstRowCols().at(3);
 const firstRowResourceShare = () => firstRowCols().at(4);
 const firstRowUserCredit = () => firstRowCols().at(5);
-const firstRowProjectControls = () =>
-  firstRowCols().at(6).findAllComponents(FontAwesomeIcon);
+const firstRowProjectControls = () => firstRowCols().at(6).findAll("span");
 
 function createWrapper({ shallow = true, clientId = "" }) {
   state = {
@@ -254,16 +233,16 @@ describe("ClientProjects.vue", () => {
 
         wrapper.vm.$nextTick().then(() => {
           expect(firstRowProjectControls().at(0).attributes("class")).toContain(
-            "fa-pause"
+            "pause-icon"
           );
           expect(firstRowProjectControls().at(1).attributes("class")).toContain(
-            "fa-arrow-rotate-left"
+            "autorenew-icon"
           );
           expect(firstRowProjectControls().at(2).attributes("class")).toContain(
-            "fa-rotate"
+            "refresh-icon"
           );
           expect(firstRowProjectControls().at(3).attributes("class")).toContain(
-            "fa-trash-can"
+            "trash-can-outline-icon"
           );
         });
       });
@@ -276,7 +255,7 @@ describe("ClientProjects.vue", () => {
 
         wrapper.vm.$nextTick().then(() => {
           expect(firstRowProjectControls().at(0).attributes("class")).toContain(
-            "fa-play"
+            "play-icon"
           );
         });
       });
@@ -384,9 +363,9 @@ describe("ClientProjects.vue", () => {
 
       wrapper.vm.$nextTick().then(() => {
         expect(firstRowExpand().isVisible()).toBe(true);
-        expect(
-          firstRowExpand().get("#project-expand").attributes("class")
-        ).toContain("fa-angle-right");
+        expect(firstRowExpand().get("span").attributes("class")).toContain(
+          "chevron-right-icon"
+        );
       });
     });
   });

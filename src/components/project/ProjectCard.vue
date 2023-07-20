@@ -9,13 +9,28 @@
       </b-col>
       <b-col md="1" class="project-actions">
         <div id="project-platforms" v-show="translatedPlatforms.length > 0">
-          <span
-            v-for="platform in translatedPlatforms"
-            :key="platform"
-            :id="'platform-' + platform"
-            class="platform-icon"
-          >
-            <font-awesome-icon :icon="'fa-brands fa-' + platform" />
+          <span class="platform-icon">
+            <AppleIcon
+              title="Works on Apple clients"
+              id="platform-apple"
+              :class="
+                translatedPlatforms.includes('apple') ? 'enabled' : 'disabled'
+              "
+            />
+            <LinuxIcon
+              title="Works on Linux clients"
+              id="platform-linux"
+              :class="
+                translatedPlatforms.includes('linux') ? 'enabled' : 'disabled'
+              "
+            />
+            <MicrosoftWindowsIcon
+              title="Works on Windows clients"
+              id="platform-windows"
+              :class="
+                translatedPlatforms.includes('windows') ? 'enabled' : 'disabled'
+              "
+            />
           </span>
         </div>
         <b-button
@@ -36,12 +51,19 @@
 <script>
 import axios from "axios";
 
+import AppleIcon from "vue-material-design-icons/Apple.vue";
+import LinuxIcon from "vue-material-design-icons/Linux.vue";
+import MicrosoftWindowsIcon from "vue-material-design-icons/MicrosoftWindows.vue";
+
 import ProjectAuthModal from "@/components/project/ProjectAuthModal.vue";
 
 export default {
   name: "ProjectCard",
   components: {
     ProjectAuthModal,
+    AppleIcon,
+    LinuxIcon,
+    MicrosoftWindowsIcon,
   },
   props: {
     clientId: {
@@ -85,8 +107,12 @@ export default {
 </script>
 
 <style scoped>
-.platform-icon {
+.platform-icon svg {
   padding-left: 5px;
+}
+
+.disabled svg {
+  fill: lightgrey !important;
 }
 
 .project-actions {

@@ -27,11 +27,15 @@
       sort-by="project_name"
     >
       <template v-slot:cell(expand)="data">
-        <div>
-          <font-awesome-icon
-            id="project-expand"
-            icon="fa-solid fa-angle-right"
-            :rotation="data.item._showDetails ? 90 : null"
+        <div id="project-expand">
+          <ChevronRightIcon
+            title="More details"
+            v-show="!data.item._showDetails"
+            @click="toggleExpandedRow(data.item.cross_project_id)"
+          />
+          <ChevronDownIcon
+            title="Less details"
+            v-show="data.item._showDetails"
             @click="toggleExpandedRow(data.item.cross_project_id)"
           />
         </div>
@@ -59,67 +63,28 @@
         {{ data.value.toFixed(2) }}
       </template>
       <template v-slot:cell(operations)="data">
-        <font-awesome-icon
-          id="project-suspend"
-          icon="fa-solid fa-pause"
-          :class="`${disabledIcons.pause ? 'disabledIcon' : 'active'}`"
+        <PauseIcon
+          title="Suspend"
           v-if="!data.item.suspended_via_gui"
           @click="suspendProject(data.item.master_url)"
         />
-        <b-tooltip
-          target="project-suspend"
-          triggers="hover"
-          placement="topright"
-        >
-          Suspend
-        </b-tooltip>
-        <font-awesome-icon
-          id="project-resume"
-          icon="fa-solid fa-play"
-          :class="`${disabledIcons.play ? 'disabledIcon' : 'active'}`"
+        <PlayIcon
+          title="Resume"
           v-if="data.item.suspended_via_gui"
           @click="resumeProject(data.item.master_url)"
         />
-        <b-tooltip
-          target="project-resume"
-          v-if="data.item.suspended_via_gui"
-          triggers="hover"
-          placement="topright"
-        >
-          Resume
-        </b-tooltip>
-        <font-awesome-icon
-          id="project-reset"
-          icon="fa-solid fa-arrow-rotate-left"
+        <AutorenewIcon
+          title="Reset"
           @click="resetProject(data.item.master_url)"
         />
-        <b-tooltip target="project-reset" triggers="hover" placement="topright">
-          Reset
-        </b-tooltip>
-        <font-awesome-icon
-          id="project-update"
-          icon="fa-solid fa-rotate"
+        <RefreshIcon
+          title="Update"
           @click="updateProject(data.item.master_url)"
         />
-        <b-tooltip
-          target="project-update"
-          triggers="hover"
-          placement="topright "
-        >
-          Update
-        </b-tooltip>
-        <font-awesome-icon
-          id="project-detach"
-          icon="fa-solid fa-trash-can"
+        <TrashCanOutlineIcon
+          title="Detach"
           @click="detachProject(data.item.master_url)"
         />
-        <b-tooltip
-          target="project-detach"
-          triggers="hover"
-          placement="topright"
-        >
-          Detach
-        </b-tooltip>
       </template>
     </b-table>
   </div>
@@ -129,8 +94,26 @@
 import { mapGetters } from "vuex";
 import axios from "axios";
 
+import ChevronDownIcon from "vue-material-design-icons/ChevronDown.vue";
+import ChevronRightIcon from "vue-material-design-icons/ChevronRight.vue";
+
+import AutorenewIcon from "vue-material-design-icons/Autorenew.vue";
+import PauseIcon from "vue-material-design-icons/Pause.vue";
+import PlayIcon from "vue-material-design-icons/Play.vue";
+import RefreshIcon from "vue-material-design-icons/Refresh.vue";
+import TrashCanOutlineIcon from "vue-material-design-icons/TrashCanOutline.vue";
+
 export default {
   name: "ClientProjects",
+  components: {
+    ChevronDownIcon,
+    ChevronRightIcon,
+    AutorenewIcon,
+    PauseIcon,
+    PlayIcon,
+    RefreshIcon,
+    TrashCanOutlineIcon,
+  },
   data() {
     return {
       disabledIcons: {
@@ -240,9 +223,6 @@ export default {
 </script>
 
 <style>
-#project-expand {
-  transition: 0.1s;
-}
 .project-controls {
   text-align: right !important;
 }

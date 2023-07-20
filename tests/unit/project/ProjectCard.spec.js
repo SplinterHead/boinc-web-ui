@@ -1,26 +1,13 @@
 import { createLocalVue, mount } from "@vue/test-utils";
 import { BootstrapVue } from "bootstrap-vue";
-
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import {
-  faApple,
-  faLinux,
-  faWindows,
-} from "@fortawesome/free-brands-svg-icons";
 import mockAxios from "jest-mock-axios";
 
 import ProjectCard from "@/components/project/ProjectCard.vue";
 import ProjectAuthModal from "@/components/project/ProjectAuthModal.vue";
 
-library.add([faApple, faLinux, faWindows]);
-
-// create an extended `Vue` constructor
 const localVue = createLocalVue();
 
-// install plugins as normal
 localVue.use(BootstrapVue);
-localVue.component("font-awesome-icon", FontAwesomeIcon);
 
 let wrapper;
 
@@ -64,9 +51,15 @@ describe("ProjectCard.vue", () => {
         platforms: [{ name: "windows_x86_64" }],
       });
       expect(platforms().isVisible()).toBe(true);
-      expect(platforms().find("#platform-apple").exists()).toBe(false);
-      expect(platforms().find("#platform-linux").exists()).toBe(false);
-      expect(platforms().find("#platform-windows").exists()).toBe(true);
+      expect(platforms().find("#platform-apple").attributes("class")).toContain(
+        "disabled"
+      );
+      expect(platforms().find("#platform-linux").attributes("class")).toContain(
+        "disabled"
+      );
+      expect(
+        platforms().find("#platform-windows").attributes("class")
+      ).toContain("enabled");
     });
 
     it("shows the 'Linux' and 'Windows' platforms when present in the platform list", () => {
@@ -79,9 +72,15 @@ describe("ProjectCard.vue", () => {
         ],
       });
       expect(platforms().isVisible()).toBe(true);
-      expect(platforms().find("#platform-apple").exists()).toBe(false);
-      expect(platforms().find("#platform-linux").exists()).toBe(true);
-      expect(platforms().find("#platform-windows").exists()).toBe(true);
+      expect(platforms().find("#platform-apple").attributes("class")).toContain(
+        "disabled"
+      );
+      expect(platforms().find("#platform-linux").attributes("class")).toContain(
+        "enabled"
+      );
+      expect(
+        platforms().find("#platform-windows").attributes("class")
+      ).toContain("enabled");
     });
 
     describe("allow the user to register a project on their client", () => {
