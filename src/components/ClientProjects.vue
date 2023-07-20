@@ -38,10 +38,18 @@
       </template>
       <template #row-details="row">
         <b-row class="mb-2">
-          <b-col cols="1">Links:</b-col>
+          <b-col cols="2" class="text-end">Links:</b-col>
           <b-col v-for="link in row.item.gui_urls" :key="link.name">
             <a :href="link.url" target="_blank">{{ link.name }}</a>
           </b-col>
+        </b-row>
+        <b-row>
+          <b-col cols="2" class="text-end">Project member since:</b-col>
+          <b-col>{{ convertEpoch(row.item.user_create_time) }}</b-col>
+        </b-row>
+        <b-row>
+          <b-col cols="2" class="text-end">Client active since:</b-col>
+          <b-col>{{ convertEpoch(row.item.host_create_time) }}</b-col>
         </b-row>
       </template>
       <template v-slot:cell(resource_share)="data">
@@ -218,6 +226,9 @@ export default {
       } else {
         this.expandedRows.push(rowId);
       }
+    },
+    convertEpoch(epoch) {
+      return new Date(epoch * 1000).toLocaleDateString();
     },
   },
   watch: {

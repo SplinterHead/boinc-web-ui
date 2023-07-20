@@ -118,14 +118,15 @@ const addProjectBtn = () => wrapper.get("#new-project");
 const projectTable = () => wrapper.get("#project-table");
 const projectTableRows = () => projectTable().get("tbody").findAll("tr");
 const firstRow = () => projectTableRows().at(0);
-const firstRowExpand = () => firstRow().findAll("td").at(0);
-const firstRowProjectName = () => firstRow().findAll("td").at(1);
-const firstRowUserName = () => firstRow().findAll("td").at(2);
-const firstRowTeamName = () => firstRow().findAll("td").at(3);
-const firstRowResourceShare = () => firstRow().findAll("td").at(4);
-const firstRowUserCredit = () => firstRow().findAll("td").at(5);
+const firstRowCols = () => firstRow().findAll("td");
+const firstRowExpand = () => firstRowCols().at(0);
+const firstRowProjectName = () => firstRowCols().at(1);
+const firstRowUserName = () => firstRowCols().at(2);
+const firstRowTeamName = () => firstRowCols().at(3);
+const firstRowResourceShare = () => firstRowCols().at(4);
+const firstRowUserCredit = () => firstRowCols().at(5);
 const firstRowProjectControls = () =>
-  firstRow().findAll("td").at(6).findAllComponents(FontAwesomeIcon);
+  firstRowCols().at(6).findAllComponents(FontAwesomeIcon);
 
 function createWrapper({ shallow = true, clientId = "" }) {
   state = {
