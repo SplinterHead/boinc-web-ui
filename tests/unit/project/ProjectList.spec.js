@@ -45,6 +45,9 @@ const sampleProjects = [
     name: "RNA World",
     platforms: [
       {
+        name: "linux_x86_64[mt]",
+      },
+      {
         name: "windows_x86_64",
       },
     ],
@@ -73,6 +76,14 @@ const sampleProjects = [
     web_url: "http://www.cosmologyathome.org/",
   },
 ];
+const sampleProjectsResponse = {
+  status: 200,
+  data: { projects: sampleProjects },
+};
+const sampleClientState = {
+  status: 200,
+  data: { platform: "linux_x86_64" },
+};
 
 localVue.use(BootstrapVue);
 localVue.use(Vuex);
@@ -86,14 +97,12 @@ let wrapper;
 
 state = {
   activeClientId: "123",
-  activeClient: {
-    platform: "linux_x86_64",
-  },
 };
+
 getters = {
-  activeClient: () => state.activeClient,
-  activeClientId: () => "123",
+  activeClientId: () => state.activeClientId,
 };
+
 store = new Vuex.Store({
   modules: {
     clients: {
@@ -120,6 +129,7 @@ function createWrapper() {
     localVue,
     store,
   });
+  mockAxios.mockResponse(sampleClientState);
 }
 
 function createFullWrapper() {
@@ -127,6 +137,7 @@ function createFullWrapper() {
     localVue,
     store,
   });
+  mockAxios.mockResponse(sampleClientState);
 }
 
 afterEach(() => {
@@ -149,11 +160,6 @@ describe("ProjectList.vue", () => {
   });
 
   describe("projects can be filtered", () => {
-    const sampleProjectsResponse = {
-      status: 200,
-      data: { projects: sampleProjects },
-    };
-
     it("displays a bar for filtering projects", async () => {
       createWrapper();
       mockAxios.mockResponse(sampleProjectsResponse);
@@ -298,7 +304,7 @@ describe("ProjectList.vue", () => {
 
         expect(wrapper.vm.filters.platform).toBe(true);
 
-        expect(projectCards().length).toBe(1);
+        expect(projectCards().length).toBe(2);
       });
     });
 
@@ -306,7 +312,6 @@ describe("ProjectList.vue", () => {
       it("can use the text and category searches together", async () => {
         createFullWrapper();
         mockAxios.mockResponse(sampleProjectsResponse);
-        await wrapper.vm.$nextTick();
 
         textSearchBox().element.value = "study";
         textSearchBox().trigger("input");

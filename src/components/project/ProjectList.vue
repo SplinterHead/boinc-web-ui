@@ -100,6 +100,7 @@ export default {
   data() {
     return {
       allProjects: [],
+      clientState: {},
       filters: {
         category: "",
         subCategory: "",
@@ -113,6 +114,7 @@ export default {
     this.timer = setInterval(this.getClientProjects, 5000);
   },
   mounted() {
+    this.getClientState();
     this.getClientProjects();
   },
   beforeDestroy() {
@@ -152,14 +154,14 @@ export default {
       }
       if (this.filters.platform) {
         projectsToRtn = projectsToRtn.filter((project) =>
-          project.platforms
-            .map((platform) => platform.name)
-            .includes(this.activeClient.platform)
+          project.platforms.some((platform) =>
+            platform.name.includes(this.clientState.platform)
+          )
         );
       }
       return projectsToRtn;
     },
-    ...mapGetters("clients", ["activeClient", "activeClientId"]),
+    ...mapGetters("clients", ["activeClientId"]),
   },
   methods: {
     getClientProjects() {
@@ -173,6 +175,17 @@ export default {
           });
       }
     },
+    getClientState() {
+      if (this.activeClientId) {
+        axios
+          .get(
+            `${process.env.VUE_APP_API_URL}/client/state?client=${this.activeClientId}`
+          )
+          .then((response) => {
+            this.clientState = response.data;
+          });
+      }
+    },
     setCategory(category) {
       this.filters.category = category;
       this.filters.subCategory = "";
@@ -183,6 +196,7 @@ export default {
   },
   watch: {
     activeClientId() {
+      this.getClientState();
       this.getClientProjects();
     },
   },
