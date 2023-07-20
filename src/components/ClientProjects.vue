@@ -21,18 +21,18 @@
     <b-table
       small
       id="project-table"
-      v-show="projects.length > 0"
+      v-show="statefulProjects.length > 0"
       :fields="fields"
-      :items="projects"
+      :items="statefulProjects"
       sort-by="project_name"
     >
-      <template v-slot:cell(expand)="row">
+      <template v-slot:cell(expand)="data">
         <div>
           <font-awesome-icon
             id="project-expand"
             icon="fa-solid fa-angle-right"
-            :rotation="row.detailsShowing ? 90 : null"
-            @click="row.toggleDetails()"
+            :rotation="data.item._showDetails ? 90 : null"
+            @click="toggleExpandedRow(data.item.cross_project_id)"
           />
         </div>
       </template>
@@ -132,6 +132,7 @@ export default {
         reset: false,
         rotate: false,
       },
+      expandedRows: [],
       fields: [
         { key: "expand", label: "" },
         "project_name",
@@ -155,6 +156,12 @@ export default {
     clearInterval(this.timer);
   },
   computed: {
+    statefulProjects() {
+      return this.projects.map((project) => ({
+        ...project,
+        _showDetails: this.expandedRows.includes(project.cross_project_id),
+      }));
+    },
     ...mapGetters("clients", ["activeClientId"]),
   },
   methods: {
@@ -204,6 +211,13 @@ export default {
       this.disabledIcons.rotate = true;
       this.callProjectEndpoint("projects/update", projectUrl);
       this.disabledIcons.rotate = false;
+    },
+    toggleExpandedRow(rowId) {
+      if (this.expandedRows.includes(rowId)) {
+        this.expandedRows.pop(rowId);
+      } else {
+        this.expandedRows.push(rowId);
+      }
     },
   },
   watch: {
