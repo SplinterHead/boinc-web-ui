@@ -1,17 +1,25 @@
 <template>
   <div id="app">
     <NavigationBar />
-    <router-view id="active-pane" />
+    <ClientList v-show="!activeClientId" />
+    <router-view id="active-pane" v-show="activeClientId" />
   </div>
 </template>
 
 <script>
-import NavigationBar from "./components/NavigationBar.vue";
+import { mapGetters } from "vuex";
+
+import NavigationBar from "@/components/NavigationBar.vue";
+import ClientList from "@/components/ClientList.vue";
 
 export default {
   name: "App",
   components: {
+    ClientList,
     NavigationBar,
+  },
+  computed: {
+    ...mapGetters("clients", ["activeClientId"]),
   },
 };
 </script>
