@@ -15,7 +15,9 @@
         - <i>{{ client.hostname }}</i>
       </b-card-body>
     </b-card>
-    <b-button id="new-client-btn">Add Client</b-button>
+    <b-button id="new-client-btn" v-b-modal.new-client-modal>
+      Add Client
+    </b-button>
   </div>
 </template>
 
