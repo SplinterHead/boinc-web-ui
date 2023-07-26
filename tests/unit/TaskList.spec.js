@@ -23,7 +23,6 @@ localVue.use(Vuex);
 
 const titleText = () => wrapper.get("h1").text();
 const messageDiv = () => wrapper.get("#message-div");
-const noClientMsg = () => messageDiv().get("#no-client");
 const noTasksMsg = () => messageDiv().get("#no-tasks");
 const resultTable = () => wrapper.get("#task-table");
 const resultTableRows = () => resultTable().get("tbody").findAll("tr");
@@ -78,21 +77,10 @@ describe("TaskList.vue", () => {
   });
 
   describe("message div should inform the user", () => {
-    it("displays the 'select client' message when no client is active", () => {
-      createWrapper({ shallow: false });
-
-      expect(resultTable().isVisible()).toBe(false);
-      expect(messageDiv().isVisible()).toBe(true);
-      expect(noClientMsg().isVisible()).toBe(true);
-      expect(noTasksMsg().isVisible()).toBe(false);
-    });
-
     it("displays the 'no tasks' message when there is no work", () => {
       createWrapper({ shallow: false, clientId: "123" });
 
       expect(resultTable().isVisible()).toBe(false);
-      expect(messageDiv().isVisible()).toBe(true);
-      expect(noClientMsg().isVisible()).toBe(false);
       expect(noTasksMsg().isVisible()).toBe(true);
     });
   });

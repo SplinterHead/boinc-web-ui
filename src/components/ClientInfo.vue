@@ -43,15 +43,13 @@ export default {
   },
   methods: {
     getActiveClientState() {
-      if (this.activeClientId) {
-        axios
-          .get(
-            `${process.env.VUE_APP_API_URL}/client/state?client=${this.activeClientId}`
-          )
-          .then((response) => {
-            this.activeClientState = response.data;
-          });
-      }
+      axios
+        .get(
+          `${process.env.VUE_APP_API_URL}/client/state?client=${this.activeClientId}`
+        )
+        .then((response) => {
+          this.activeClientState = response.data;
+        });
     },
   },
   watch: {

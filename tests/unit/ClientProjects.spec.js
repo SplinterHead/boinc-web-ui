@@ -91,7 +91,6 @@ localVue.use(VueRouter);
 
 const titleText = () => wrapper.get("h1").text();
 const messageDiv = () => wrapper.get("#message-div");
-const noClientMsg = () => messageDiv().get("#no-client");
 const noProjectMsg = () => messageDiv().get("#no-projects");
 const addProjectBtn = () => wrapper.get("#new-project");
 
@@ -160,19 +159,9 @@ describe("ClientProjects.vue", () => {
   });
 
   describe("message div", () => {
-    it("displays the 'select client' message when no client is active", () => {
-      createWrapper({});
-
-      expect(projectTable().isVisible()).toBe(false);
-      expect(messageDiv().isVisible()).toBe(true);
-      expect(noClientMsg().isVisible()).toBe(true);
-      expect(noProjectMsg().isVisible()).toBe(false);
-    });
     it("displays the 'no projects' message when client has no projects", () => {
       createWrapper({ clientId: "123" });
 
-      expect(messageDiv().isVisible()).toBe(true);
-      expect(noClientMsg().isVisible()).toBe(false);
       expect(noProjectMsg().isVisible()).toBe(true);
     });
   });

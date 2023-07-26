@@ -9,14 +9,11 @@
       </b-navbar-nav>
     </b-navbar>
     <div id="message-div" v-show="projects.length == 0">
-      <div id="no-client" v-show="!activeClientId">
-        Please select a client to see it's projects
-      </div>
-      <div id="no-projects" v-show="activeClientId">
+      <span id="no-projects">
         This client is not attached to any projects
         <br />
         Please add some so it's not twiddling it's thumbs
-      </div>
+      </span>
     </div>
     <b-table
       small
@@ -159,16 +156,14 @@ export default {
   },
   methods: {
     getAttachedProjects() {
-      if (this.activeClientId) {
-        axios
-          .get(
-            `${process.env.VUE_APP_API_URL}/projects/attached?client=${this.activeClientId}`
-          )
-          .then((response) => (this.projects = response.data.project_status))
-          .catch((msg) => {
-            console.log(msg);
-          });
-      }
+      axios
+        .get(
+          `${process.env.VUE_APP_API_URL}/projects/attached?client=${this.activeClientId}`
+        )
+        .then((response) => (this.projects = response.data.project_status))
+        .catch((msg) => {
+          console.log(msg);
+        });
     },
     callProjectEndpoint(endpointUrl, projectUrl) {
       axios

@@ -2,10 +2,7 @@
   <div>
     <h1>Task List</h1>
     <div id="message-div" v-show="tasks.length == 0">
-      <span id="no-client" v-show="!activeClientId">
-        Please select a client to see it's tasks
-      </span>
-      <span id="no-tasks" v-show="activeClientId">
+      <span id="no-tasks">
         This client has no work to do
         <br />
         Check it is attached to projects and that they aren't paused

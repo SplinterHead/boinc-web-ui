@@ -2,7 +2,7 @@
   <div>
     <h1>Notices</h1>
     <div id="message-div" v-show="Object.keys(notices).length == 0">
-      No notices for this client
+      <span id="no-notices"> No notices for this client </span>
     </div>
     <b-table
       v-show="Object.keys(notices).length > 0"
@@ -64,15 +64,13 @@ export default {
   },
   methods: {
     getClientNotices() {
-      if (this.activeClientId) {
-        axios
-          .get(
-            `${process.env.VUE_APP_API_URL}/notices/all?client=${this.activeClientId}`
-          )
-          .then((response) => {
-            this.notices = response.data.notices;
-          });
-      }
+      axios
+        .get(
+          `${process.env.VUE_APP_API_URL}/notices/all?client=${this.activeClientId}`
+        )
+        .then((response) => {
+          this.notices = response.data.notices;
+        });
     },
     convertEpoch(epoch) {
       return new Date(epoch).toLocaleString();

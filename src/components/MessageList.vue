@@ -2,7 +2,7 @@
   <div>
     <h1>Messages</h1>
     <div id="message-div" v-show="Object.keys(messages).length == 0">
-      No messages for this client
+      <span id="no-messages"> No messages for this client </span>
     </div>
     <b-table
       id="message-table"
@@ -65,15 +65,13 @@ export default {
   },
   methods: {
     getClientMessages() {
-      if (this.activeClientId) {
-        axios
-          .get(
-            `${process.env.VUE_APP_API_URL}/messages/all?client=${this.activeClientId}`
-          )
-          .then((response) => {
-            this.messages = response.data.messages;
-          });
-      }
+      axios
+        .get(
+          `${process.env.VUE_APP_API_URL}/messages/all?client=${this.activeClientId}`
+        )
+        .then((response) => {
+          this.messages = response.data.messages;
+        });
     },
     convertEpoch(epoch) {
       return new Date(epoch).toLocaleString();
