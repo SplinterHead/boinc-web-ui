@@ -28,16 +28,18 @@
     >
       <template v-slot:cell(expand)="data">
         <div id="project-expand">
-          <ChevronRightIcon
-            title="More details"
-            v-show="!data.item._showDetails"
-            @click="toggleExpandedRow(data.item.cross_project_id)"
-          />
-          <ChevronDownIcon
-            title="Less details"
-            v-show="data.item._showDetails"
-            @click="toggleExpandedRow(data.item.cross_project_id)"
-          />
+          <div v-show="!data.item._showDetails">
+            <ChevronRightIcon
+              title="More details"
+              @click="toggleExpandedRow(data.item.cross_project_id)"
+            />
+          </div>
+          <div v-show="data.item._showDetails">
+            <ChevronDownIcon
+              title="Less details"
+              @click="toggleExpandedRow(data.item.cross_project_id)"
+            />
+          </div>
         </div>
       </template>
       <template #row-details="row">

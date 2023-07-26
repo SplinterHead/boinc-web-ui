@@ -366,6 +366,9 @@ describe("ClientProjects.vue", () => {
         expect(firstRowExpand().get("span").attributes("class")).toContain(
           "chevron-right-icon"
         );
+        expect(firstRowExpand().get("span").attributes("class")).not.toContain(
+          "chevron-down-icon"
+        );
       });
     });
   });
