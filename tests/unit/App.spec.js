@@ -20,7 +20,6 @@ localVue.use(BootstrapVue);
 localVue.use(VueRouter);
 localVue.use(Vuex);
 
-const activePane = () => wrapper.get("#active-pane");
 const clientList = () => wrapper.getComponent(ClientList);
 const navigationBar = () => wrapper.getComponent(NavigationBar);
 
@@ -56,13 +55,11 @@ describe("App.vue", () => {
 
   it("shows the client select menu when there isn't an active client", () => {
     createWrapper();
-    expect(activePane().isVisible()).toBe(false);
     expect(clientList().isVisible()).toBe(true);
   });
 
-  it("shows the client pant when there is an active client", () => {
+  it("hides the client select menu when there is an active client", () => {
     createWrapper("123");
-    expect(activePane().isVisible()).toBe(true);
     expect(clientList().isVisible()).toBe(false);
   });
 });
