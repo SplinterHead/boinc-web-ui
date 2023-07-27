@@ -3,10 +3,8 @@ import { BCard, BootstrapVue } from "bootstrap-vue";
 
 import BasicClientInfo from "@/components/clientinfo/BasicClientInfo.vue";
 
-// create an extended `Vue` constructor
 const localVue = createLocalVue();
 
-// install plugins as normal
 localVue.use(BootstrapVue);
 
 const testProps = {

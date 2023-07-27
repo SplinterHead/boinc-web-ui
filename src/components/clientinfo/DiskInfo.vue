@@ -1,13 +1,10 @@
 <template>
   <b-card title="Disk Stats">
     <b-table id="overall-stats" :fields="tableFields" :items="[diskStats]" />
-    <div
-      id="message-div"
-      v-show="diskStats.projects && diskStats.projects.length == 0"
-    >
+    <div id="message-div" v-show="!Object.keys(diskStats.projects).length">
       Client not attached to any projects
     </div>
-    <div id="chart-container">
+    <div id="chart-container" v-show="Object.keys(diskStats.projects).length">
       <Doughnut :data="diskGraphData" :options="diskGraphOptions" />
     </div>
   </b-card>
