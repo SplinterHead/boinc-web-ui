@@ -20,8 +20,8 @@ localVue.use(BootstrapVue);
 localVue.use(VueRouter);
 localVue.use(Vuex);
 
-const clientList = () => wrapper.getComponent(ClientList);
-const navigationBar = () => wrapper.getComponent(NavigationBar);
+const clientList = () => wrapper.findComponent(ClientList);
+const navigationBar = () => wrapper.findComponent(NavigationBar);
 
 function createWrapper(clientId) {
   state = {
@@ -55,11 +55,11 @@ describe("App.vue", () => {
 
   it("shows the client select menu when there isn't an active client", () => {
     createWrapper();
-    expect(clientList().isVisible()).toBe(true);
+    expect(clientList().exists()).toBe(true);
   });
 
   it("hides the client select menu when there is an active client", () => {
     createWrapper("123");
-    expect(clientList().isVisible()).toBe(false);
+    expect(clientList().exists()).toBe(false);
   });
 });

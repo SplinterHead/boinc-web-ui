@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <NavigationBar />
-    <ClientList class="active-pane" v-show="!activeClientId" />
-    <router-view class="active-pane" v-show="activeClientId" />
+    <ClientList class="active-pane client-list" v-if="!activeClientId" />
+    <router-view class="active-pane" v-if="activeClientId" />
   </div>
 </template>
 
@@ -36,5 +36,10 @@ export default {
 .active-pane {
   margin-left: 350px;
   margin-right: 30px;
+}
+
+.client-list {
+  margin-top: 35vh;
+  margin-bottom: 65vh;
 }
 </style>
