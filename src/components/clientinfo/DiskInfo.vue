@@ -68,6 +68,8 @@ export default {
         });
     },
     convertBytes(bytes) {
+      let pb = bytes / 10 ** 15;
+      let tb = bytes / 10 ** 12;
       let gb = bytes / 10 ** 9;
       let mb = bytes / 10 ** 6;
       let kb = bytes / 10 ** 3;
@@ -77,8 +79,12 @@ export default {
         return `${kb.toFixed(2)} KB`;
       } else if (gb < 1) {
         return `${mb.toFixed(2)} MB`;
-      } else {
+      } else if (tb < 1) {
         return `${gb.toFixed(2)} GB`;
+      } else if (pb < 1) {
+        return `${tb.toFixed(2)} TB`;
+      } else {
+        return `${pb.toFixed(2)} PB`;
       }
     },
   },

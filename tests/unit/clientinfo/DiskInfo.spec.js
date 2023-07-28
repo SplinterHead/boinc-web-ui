@@ -10,7 +10,7 @@ const smallDiskWithoutProjects = {
   d_allowed: 3200000,
   d_boinc: 120000,
   d_free: 16000000,
-  d_total: 32000000,
+  d_total: 32000000000,
   projects: [],
 };
 const simpleDiskWithProjects = {
@@ -96,7 +96,7 @@ describe("DiskInfo.vue", () => {
 
     wrapper.vm.$nextTick().then(() => {
       expect(diskStatTable().isVisible()).toBe(true);
-      expect(diskStatSize().text()).toBe("32.00 MB");
+      expect(diskStatSize().text()).toBe("32.00 GB");
       expect(diskStatFree().text()).toBe("16.00 MB");
       expect(diskStatBoincUse().text()).toBe("120.00 KB");
     });
