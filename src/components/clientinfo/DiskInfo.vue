@@ -1,6 +1,16 @@
 <template>
   <b-card title="Disk Stats">
-    <b-table id="overall-stats" :fields="tableFields" :items="[diskStats]" />
+    <b-table id="overall-stats" :fields="tableFields" :items="[diskStats]">
+      <template v-slot:cell(d_total)="data">
+        {{ convertBytes(data.value) }}
+      </template>
+      <template v-slot:cell(d_free)="data">
+        {{ convertBytes(data.value) }}
+      </template>
+      <template v-slot:cell(d_boinc)="data">
+        {{ convertBytes(data.value) }}
+      </template>
+    </b-table>
     <div id="message-div" v-show="!Object.keys(diskStats.projects).length">
       Client not attached to any projects
     </div>
@@ -39,6 +49,7 @@ export default {
             position: "left",
           },
         },
+        animation: false,
         responsive: true,
       },
     };
@@ -55,6 +66,20 @@ export default {
         .then((response) => {
           this.diskStats = response.data.disk_stats;
         });
+    },
+    convertBytes(bytes) {
+      let gb = bytes / 10 ** 9;
+      let mb = bytes / 10 ** 6;
+      let kb = bytes / 10 ** 3;
+      if (kb < 1) {
+        return `${bytes} B`;
+      } else if (mb < 1) {
+        return `${kb.toFixed(2)} KB`;
+      } else if (gb < 1) {
+        return `${mb.toFixed(2)} MB`;
+      } else {
+        return `${gb.toFixed(2)} GB`;
+      }
     },
   },
   computed: {
