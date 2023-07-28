@@ -42,4 +42,10 @@ export default {
   margin-top: 35vh;
   margin-bottom: 65vh;
 }
+
+.material-design-icon.icon-2x,
+.material-design-icon.icon-2x > .material-design-icon__svg {
+  height: 2em;
+  width: 2em;
+}
 </style>

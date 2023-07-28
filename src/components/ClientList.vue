@@ -66,12 +66,6 @@ div {
   margin: 0px 10px;
 }
 
-.material-design-icon.icon-2x,
-.material-design-icon.icon-2x > .material-design-icon__svg {
-  height: 2em;
-  width: 2em;
-}
-
 #new-client-btn {
   margin-top: 10px;
 }
