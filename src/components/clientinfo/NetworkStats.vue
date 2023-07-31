@@ -4,7 +4,7 @@
       No network stats found
     </div>
     <div id="chart-container" v-show="Object.keys(networkStats).length">
-      <LineChart :data="networkGraphData" />
+      <LineChart :data="networkGraphData" :options="networkGraphOptions" />
     </div>
   </b-card>
 </template>
@@ -40,6 +40,9 @@ export default {
   data() {
     return {
       networkStats: {},
+      networkGraphOptions: {
+        animation: false,
+      },
     };
   },
   mounted() {
