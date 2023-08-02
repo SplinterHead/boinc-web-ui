@@ -13,8 +13,8 @@
     :no-header-close="true"
   >
     <ClientSelectList />
-
     <br />
+
     <router-link
       to="/clientinfo"
       id="client-info-nav"
@@ -23,8 +23,8 @@
     >
       Client Info
     </router-link>
-
     <br />
+
     <router-link
       to="/tasks"
       id="task-list-nav"
@@ -33,8 +33,18 @@
     >
       Tasks
     </router-link>
-
     <br />
+
+    <router-link
+      to="/filetransfers"
+      id="file-transfer-nav"
+      :class="linkDisabled ? 'disabled' : 'active'"
+      :event="linkDisabled ? 'none' : 'click'"
+    >
+      File Transfers
+    </router-link>
+    <br />
+
     <router-link
       to="/projects"
       id="project-list-nav"
@@ -44,6 +54,7 @@
       Project List
     </router-link>
     <br />
+
     <router-link
       to="/notices"
       id="notice-list-nav"
@@ -53,6 +64,7 @@
       Notices
     </router-link>
     <br />
+
     <router-link
       to="/messages"
       id="message-list-nav"

@@ -18,6 +18,8 @@ localVue.use(Vuex);
 localVue.use(VueRouter);
 
 const sidebar = () => wrapper.findComponent(BSidebar);
+const clientInfoLink = () => sidebar().get("#client-info-nav");
+const fileTransferLink = () => sidebar().get("#file-transfer-nav");
 const taskListLink = () => sidebar().get("#task-list-nav");
 const projectListLink = () => sidebar().get("#project-list-nav");
 const noticeListLink = () => sidebar().get("#notice-list-nav");
@@ -62,6 +64,8 @@ describe("NavigationBar.vue", () => {
     it("has all menu entries", () => {
       createWrapper();
 
+      expect(clientInfoLink().text()).toBe("Client Info");
+      expect(fileTransferLink().text()).toBe("File Transfers");
       expect(taskListLink().text()).toBe("Tasks");
       expect(projectListLink().text()).toBe("Project List");
       expect(noticeListLink().text()).toBe("Notices");
