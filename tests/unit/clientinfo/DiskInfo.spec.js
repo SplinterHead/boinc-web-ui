@@ -96,9 +96,9 @@ describe("DiskInfo.vue", () => {
 
     wrapper.vm.$nextTick().then(() => {
       expect(diskStatTable().isVisible()).toBe(true);
-      expect(diskStatSize().text()).toBe("32.00 GB");
-      expect(diskStatFree().text()).toBe("16.00 MB");
-      expect(diskStatBoincUse().text()).toBe("120.00 KB");
+      expect(diskStatSize().text()).toBe("32 GB");
+      expect(diskStatFree().text()).toBe("16 MB");
+      expect(diskStatBoincUse().text()).toBe("120 KB");
     });
   });
 

@@ -23,6 +23,7 @@
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios";
+import { convertBytes } from "@/utils/converters.js";
 import { Chart as ChartJS, ArcElement, Legend, Tooltip } from "chart.js";
 import { Doughnut } from "vue-chartjs";
 
@@ -68,24 +69,7 @@ export default {
         });
     },
     convertBytes(bytes) {
-      let pb = bytes / 10 ** 15;
-      let tb = bytes / 10 ** 12;
-      let gb = bytes / 10 ** 9;
-      let mb = bytes / 10 ** 6;
-      let kb = bytes / 10 ** 3;
-      if (kb < 1) {
-        return `${bytes} B`;
-      } else if (mb < 1) {
-        return `${kb.toFixed(2)} KB`;
-      } else if (gb < 1) {
-        return `${mb.toFixed(2)} MB`;
-      } else if (tb < 1) {
-        return `${gb.toFixed(2)} GB`;
-      } else if (pb < 1) {
-        return `${tb.toFixed(2)} TB`;
-      } else {
-        return `${pb.toFixed(2)} PB`;
-      }
+      return convertBytes(bytes);
     },
   },
   computed: {
